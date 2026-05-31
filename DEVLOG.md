@@ -1,7 +1,7 @@
 # 📓 Developer Log — Morse Code Decoder
 **Project:** Intelligent Morse Code Decoder  
 **Course:** Object-Oriented Programming (OOP) — TH Köln  
-**Team:** Sereena Jency + Partner  
+**Team:** Sereena Jency 
 **Semester:** Summer Semester 2026  
 
 ---
