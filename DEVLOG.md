@@ -103,6 +103,83 @@ MorseApp          → main controller class
 
 ---
 
+---
+
+## Week 5 — June 14, 2026 — Decoder Upgrade & Real Audio Improvements
+
+### What We Did
+
+#### 1. Finer RMS Envelope (10ms Hann Window)
+Replaced STFT-based RMS with a direct windowed RMS using a 10ms frame:
+```python
+frame_length = max(64, int(self.sr * 0.01))  # 10ms
+hop_length = frame_length // 2
+rms = librosa.feature.rms(y=self.filtered_audio, frame_length=frame_length, hop_length=hop_length)[0]
+```
+**Why:** Default STFT gives ~23ms per frame at 22050 Hz — too coarse for fast Morse. 10ms gives ~110 data points per second, so short dots are no longer missed.
+
+#### 2. Adaptive Median Threshold
+Replaced the fixed `0.5 * max(rms)` threshold with a median-based approach:
+```python
+noise_floor = np.max(rms) * 0.05
+active_rms = rms[rms > noise_floor]
+threshold = np.median(active_rms) * 0.6 if len(active_rms) > 0 else np.max(rms) * 0.5
+```
+**Why:** A single noise spike could raise `max(rms)` and push the threshold too high, causing the decoder to see silence where there was signal. The median of active (non-silent) frames is much more stable.
+
+#### 3. Decode with Timing (`decode_with_timing()`)
+Added a new method that returns timed events alongside the decoded text:
+```python
+# Each segment now tracks its start frame index
+segments.append((bool(current), count, start))
+
+# Time in seconds for each event
+time_sec = (start_frame * hop_length) / self.sr
+events.append((time_sec, 'symbol', symbol))   # dot or dash
+events.append((time_sec, 'letter', letter))   # decoded letter
+events.append((time_sec, 'word', ' '))        # word space
+```
+Returns `(events, full_text)`. The `decode()` method now calls this internally:
+```python
+def decode(self):
+    _, text = self.decode_with_timing()
+    return text
+```
+
+#### 4. K-Means Ratio Validation (L detection fix)
+After clustering ON durations, validate that the dot/dash clusters are in the expected ~3:1 ratio. If not, fall back to a mean-based split:
+```python
+ratio = centers[dash_cluster] / (centers[dot_cluster] + 1e-9)
+if ratio < 2.0:
+    _on_split = float(np.mean(on_durations))
+    _use_kmeans_on = False
+else:
+    _use_kmeans_on = True
+```
+**Why:** In dot-heavy audio (many E, I, S, H), K-Means clusters drift and the boundary between dots and dashes becomes unclear. This caused `L` (`.-..`) to be decoded as `?` because the dash was misclassified as a dot. The mean-based fallback splits durations at their natural midpoint.
+
+#### 5. Background Thread Processing
+Moved all heavy computation (librosa load, bandpass filter, KMeans decode) into a background thread so the UI stays responsive:
+```python
+def _process():
+    y, sr = AudioLoader(self.audio_file).load()
+    filtered = SignalFilter(y, sr).filter()
+    events, _ = MorseDecoder(filtered, sr, MORSE_CODE_DICT).decode_with_timing()
+    self.app.after(0, lambda: self._on_decode_ready(session, y, sr, filtered, events))
+
+threading.Thread(target=_process, daemon=True).start()
+```
+**Important:** `plt.subplots()` must stay on the main thread — only pure computation goes in the background thread.
+
+### Results
+- ✅ L (`.-..`) now correctly detected in real audio
+- ✅ Adaptive threshold handles noisy/low-volume files
+- ✅ Finer RMS captures fast Morse signals accurately
+- ✅ UI no longer freezes during processing
+- ⚠️ Word gap detection still inconsistent on some real audio files
+
+---
+
 ## 📋 Current Status
 
 | Feature | Status |
@@ -112,21 +189,25 @@ MorseApp          → main controller class
 | Signal visualization (time-domain) | ✅ Done |
 | Morse decoding — clean audio | ✅ Done |
 | Professional UI with file loader | ✅ Done |
+| Finer RMS envelope (10ms window) | ✅ Done |
+| Adaptive median threshold | ✅ Done |
+| Decode with timing (timed events) | ✅ Done |
+| K-Means ratio validation fallback | ✅ Done |
+| Audio playback in UI | ✅ Done |
+| Background thread processing | ✅ Done |
 | Morse decoding — real/noisy audio | ⚠️ Partial |
-| Intelligent correction layer | ⬜ Planned |
 | Variable speed detection | ⬜ Planned |
-| Audio playback in UI | ⬜ Planned |
+| Intelligent correction layer | ⬜ Planned |
 
 ---
 
 ## 🔜 Next Steps
 
-1. Implement proper Hann window RMS envelope extraction
+1. Fix word gap detection for real-world audio
 2. Build intelligent correction layer using N-grams
 3. Add variable speed (WPM) detection
-4. Add audio playback feature in UI
-5. Push to RWTH GitLab once access is granted
-6. Prepare Presentation 1 slides (June 29, 2026)
+4. Push to RWTH GitLab once access is granted
+5. Prepare Presentation 1 slides (June 29, 2026)
 
 ---
 

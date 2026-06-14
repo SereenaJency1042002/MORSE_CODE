@@ -1,121 +1,322 @@
 import customtkinter as ctk
 from tkinter import filedialog
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
-import matplotlib.pyplot as plt
-import numpy as np
+import threading
+import time
+import sounddevice as sd
+import soundfile as sf
+
+ctk.set_appearance_mode("light")
+ctk.set_default_color_theme("dark-blue")
+
+# Brown palette
+_BG        = "#F2E4CC"   # warm parchment
+_SURFACE   = "#FDF6EC"   # lighter cream (graph, textbox)
+_BORDER    = "#D4B896"   # tan border
+_TEXT      = "#2C1A0E"   # dark espresso
+_MUTED     = "#8B6B4A"   # medium brown
+_BUTTON    = "#6B3A2A"   # mahogany (all buttons same color)
+_BTN_HOVER = "#5A2F22"   # darker mahogany
+_AMBER     = "#C17F24"   # amber (morse symbols)
+
 
 class UIDisplay:
     def __init__(self):
         self.audio_file = None
+        self._playback_thread = None
+        self._stop_playback = False
+        self._decode_session = 0
+        self._current_morse = ""
+        self._playhead = None
+        self._canvas_ref = None
+        self._decode_start_time = 0
+        self._audio_duration = 0
+
         self.app = ctk.CTk()
         self.app.title("Morse Code Decoder")
-        self.app.geometry("900x700")
-        # Title
-        title = ctk.CTkLabel(
-            self.app, 
-            text="🎵 Morse Code Decoder",
-            font=ctk.CTkFont(size=24, weight="bold")
-        )
-        title.pack(pady=10)
+        self.app.geometry("940x780")
+        self.app.configure(fg_color=_BG)
 
-        # Buttons frame
-        btn_frame = ctk.CTkFrame(self.app)
-        btn_frame.pack(pady=10)
-
-        # Load File button
-        self.load_btn = ctk.CTkButton(
-            btn_frame,
-            text="📂 Load Audio File",
-            command=self.load_file
-        )
-        self.load_btn.pack(side="left", padx=10)
-
-        # Decode button
-        self.decode_btn = ctk.CTkButton(
-            btn_frame,
-            text="▶ Decode",
-            command=self.decode
-        )
-        self.decode_btn.pack(side="left", padx=10)
-
-        # File label
-        self.file_label = ctk.CTkLabel(
-            self.app,
-            text="No file loaded",
-            font=ctk.CTkFont(size=12)
-        )
-        self.file_label.pack(pady=5)
-        # Graph frame
-        self.graph_frame = ctk.CTkFrame(self.app)
-        self.graph_frame.pack(pady=10, fill="both", expand=True, padx=20)
-
-        # Decoded text label
-        self.result_label = ctk.CTkLabel(
-            self.app,
-            text="Decoded Text: ",
-            font=ctk.CTkFont(size=16)
-        )
-        self.result_label.pack(pady=5)
-
-        # Decoded text display box
-        self.text_box = ctk.CTkTextbox(
-            self.app,
-            height=80,
-            font=ctk.CTkFont(size=20, weight="bold")
-        )
-        self.text_box.pack(pady=5, fill="x", padx=20)
+        self._build_ui()
         self.app.protocol("WM_DELETE_WINDOW", self.on_close)
-        
+
+    def _build_ui(self):
+        self._loading = False
+        # ── Title ─────────────────────────────────────────────────────────────
+        ctk.CTkLabel(
+            self.app,
+            text="Morse Code Decoder",
+            font=ctk.CTkFont(size=26, weight="bold"),
+            text_color=_TEXT,
+        ).pack(pady=(20, 4))
+
+        ctk.CTkLabel(
+            self.app,
+            text="Load an audio file and decode its Morse signal",
+            font=ctk.CTkFont(size=12),
+            text_color=_MUTED,
+        ).pack(pady=(0, 12))
+
+        # ── Buttons (all same mahogany color) ─────────────────────────────────
+        btn_frame = ctk.CTkFrame(self.app, fg_color="transparent")
+        btn_frame.pack(pady=(0, 8))
+
+        btn_style = dict(
+            fg_color=_BUTTON, hover_color=_BTN_HOVER,
+            font=ctk.CTkFont(size=13, weight="bold"),
+            corner_radius=8, height=36,
+        )
+
+        self.load_btn = ctk.CTkButton(
+            btn_frame, text="📂  Load File", width=140,
+            command=self.load_file, **btn_style
+        )
+        self.load_btn.pack(side="left", padx=6)
+
+        self.decode_btn = ctk.CTkButton(
+            btn_frame, text="▶  Decode & Play", width=160,
+            command=self.decode, **btn_style
+        )
+        self.decode_btn.pack(side="left", padx=6)
+
+        self.play_btn = ctk.CTkButton(
+            btn_frame, text="🔊  Play Audio", width=140,
+            state="disabled", command=self.play_audio, **btn_style
+        )
+        self.play_btn.pack(side="left", padx=6)
+
+        self.stop_btn = ctk.CTkButton(
+            btn_frame, text="⏹  Stop", width=100,
+            state="disabled", command=self.stop_audio, **btn_style
+        )
+        self.stop_btn.pack(side="left", padx=6)
+
+        # ── File status ───────────────────────────────────────────────────────
+        self.file_label = ctk.CTkLabel(
+            self.app, text="No file loaded",
+            font=ctk.CTkFont(size=11), text_color=_MUTED,
+        )
+        self.file_label.pack(pady=(2, 6))
+
+        # ── Graph frame ───────────────────────────────────────────────────────
+        self.graph_frame = ctk.CTkFrame(
+            self.app, fg_color=_SURFACE,
+            border_color=_BORDER, border_width=1, corner_radius=10,
+        )
+        self.graph_frame.pack(padx=30, pady=6, fill="both", expand=True)
+
+        # ── Live morse label (amber, bold) ────────────────────────────────────
+        self.morse_label = ctk.CTkLabel(
+            self.app, text="",
+            font=ctk.CTkFont(size=28, family="Courier New", weight="bold"),
+            text_color=_AMBER,
+        )
+        self.morse_label.pack(pady=(10, 2))
+
+        # ── Decoded text ──────────────────────────────────────────────────────
+        ctk.CTkLabel(
+            self.app, text="Decoded Text",
+            font=ctk.CTkFont(size=12, weight="bold"), text_color=_MUTED,
+        ).pack(pady=(4, 2))
+
+        self.text_box = ctk.CTkTextbox(
+            self.app, height=75,
+            fg_color=_SURFACE, text_color=_TEXT,
+            border_color=_BORDER, border_width=1,
+            corner_radius=8,
+            font=ctk.CTkFont(size=22, weight="bold"),
+        )
+        self.text_box.pack(padx=30, pady=(0, 20), fill="x")
+
+    # ── file loading ──────────────────────────────────────────────────────────
+
     def load_file(self):
-        # Open file dialog
         file_path = filedialog.askopenfilename(
             filetypes=[("Audio Files", "*.wav *.mp3")]
         )
         if file_path:
             self.audio_file = file_path
-            self.file_label.configure(
-                text=f"Loaded: {file_path.split('/')[-1]}"
+            name = file_path.replace("\\", "/").split("/")[-1]
+            self.file_label.configure(text=f"●  {name}", text_color=_BUTTON)
+            self.play_btn.configure(state="normal")
+
+    # ── playback helpers ──────────────────────────────────────────────────────
+
+    def play_audio(self):
+        if not self.audio_file:
+            return
+        self._cancel_animation()
+        sd.stop()
+        self._stop_playback = False
+        self.play_btn.configure(state="disabled")
+        self.stop_btn.configure(state="normal")
+
+        def _play():
+            try:
+                data, samplerate = sf.read(self.audio_file)
+                sd.play(data, samplerate)
+                sd.wait()
+            finally:
+                self.app.after(0, self._on_playback_done)
+
+        self._playback_thread = threading.Thread(target=_play, daemon=True)
+        self._playback_thread.start()
+
+    def stop_audio(self):
+        self._cancel_animation()
+        sd.stop()
+        self._stop_playback = True
+        self._on_playback_done()
+
+    def _on_playback_done(self):
+        self.play_btn.configure(state="normal" if self.audio_file else "disabled")
+        self.stop_btn.configure(state="disabled")
+
+    def _cancel_animation(self):
+        self._loading = False
+        self._decode_session += 1
+        self._current_morse = ""
+        self.morse_label.configure(text="")
+
+    def _start_spinner(self, session):
+        self._loading = True
+        frames = ["⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏"]
+        idx = [0]
+
+        def _tick():
+            if not self._loading or self._decode_session != session:
+                return
+            self.morse_label.configure(
+                text=f"{frames[idx[0] % len(frames)]}   Processing..."
             )
-    def on_close(self):
-        self.app.quit()
-        self.app.destroy()
-            
+            idx[0] += 1
+            self.app.after(80, _tick)
+
+        _tick()
+
+    def _stop_spinner(self):
+        self._loading = False
+        self.morse_label.configure(text="")
+
+    # ── moving playhead ───────────────────────────────────────────────────────
+
+    def _update_playhead(self, session):
+        if self._decode_session != session or self._playhead is None:
+            return
+        elapsed = time.time() - self._decode_start_time
+        x = min(elapsed, self._audio_duration)
+        self._playhead.set_xdata([x, x])
+        self._canvas_ref.draw_idle()
+        if elapsed < self._audio_duration:
+            self.app.after(50, lambda s=session: self._update_playhead(s))
+
+    # ── animated decode callbacks ─────────────────────────────────────────────
+
+    def _show_symbol(self, session, symbol):
+        if self._decode_session != session:
+            return
+        self._current_morse += symbol
+        self.morse_label.configure(text=self._current_morse)
+
+    def _show_letter(self, session, letter):
+        if self._decode_session != session:
+            return
+        self._current_morse = ""
+        self.morse_label.configure(text="")
+        self.text_box.insert("end", letter)
+
+    def _show_word(self, session):
+        if self._decode_session != session:
+            return
+        self._current_morse = ""
+        self.morse_label.configure(text="")
+        self.text_box.insert("end", " ")
+
+    # ── main decode ───────────────────────────────────────────────────────────
+
     def decode(self):
         if not self.audio_file:
-            self.file_label.configure(text="⚠️ Please load a file first!")
+            self.file_label.configure(text="⚠  Please load a file first!", text_color=_BUTTON)
             return
 
-        from audio_loader import AudioLoader
-        from signal_filter import SignalFilter
+        self._cancel_animation()
+        sd.stop()
+        session = self._decode_session
+
+        # Show spinner immediately while processing runs in background
+        self.decode_btn.configure(state="disabled", text="⏳  Processing...")
+        self.text_box.delete("1.0", "end")
+        self._start_spinner(session)
+
+        def _process():
+            from audio_loader import AudioLoader
+            from signal_filter import SignalFilter
+            from morse_decoder import MorseDecoder, MORSE_CODE_DICT
+
+            y, sr = AudioLoader(self.audio_file).load()
+            filtered = SignalFilter(y, sr).filter()
+            events, _ = MorseDecoder(filtered, sr, MORSE_CODE_DICT).decode_with_timing()
+
+            # Pass filtered audio back to main thread for figure creation
+            self.app.after(0, lambda: self._on_decode_ready(session, y, sr, filtered, events))
+
+        threading.Thread(target=_process, daemon=True).start()
+
+    def _on_decode_ready(self, session, y, sr, filtered, events):
+        if self._decode_session != session:
+            return
+
+        self._stop_spinner()
+        self.decode_btn.configure(state="normal", text="▶  Decode & Play")
+
+        # Create figure on main thread (matplotlib requires this)
         from signal_visualizer import SignalVisualizer
-        from morse_decoder import MorseDecoder, MORSE_CODE_DICT
+        fig = SignalVisualizer(filtered, sr).get_figure()
 
-        # Load and process audio
-        loader = AudioLoader(self.audio_file)
-        y, sr = loader.load()
-
-        filter = SignalFilter(y, sr)
-        filtered_audio = filter.filter()
-
-        # Show graph inside window
-        visualizer = SignalVisualizer(filtered_audio, sr)
-        fig = visualizer.get_figure()
-        
-        # Embed graph in UI
+        # Embed graph
+        ax = fig.axes[0]
+        self._playhead = ax.axvline(x=0, color=_BUTTON, linewidth=2, alpha=0.9, zorder=5)
         for widget in self.graph_frame.winfo_children():
             widget.destroy()
         canvas = FigureCanvasTkAgg(fig, master=self.graph_frame)
         canvas.draw()
         canvas.get_tk_widget().pack(fill="both", expand=True)
+        self._canvas_ref = canvas
 
-        # Decode and show text
-        decoder = MorseDecoder(filtered_audio, sr, MORSE_CODE_DICT)
-        morse_sequence = decoder.decode()
-        decoded_text = ''.join(morse_sequence)
+        self._audio_duration = len(y) / sr
+        self._stop_playback = False
+        self.play_btn.configure(state="disabled")
+        self.stop_btn.configure(state="normal")
 
-        # Update text box
-        self.text_box.delete("1.0", "end")
-        self.text_box.insert("1.0", decoded_text)
-        
+        # Capture start time right before audio starts for tight sync
+        def _play():
+            self._decode_start_time = time.time()
+            try:
+                sd.play(y, sr)
+                sd.wait()
+            finally:
+                self.app.after(0, self._on_playback_done)
+
+        self._playback_thread = threading.Thread(target=_play, daemon=True)
+        self._playback_thread.start()
+
+        # Give the audio thread a moment to actually start, then kick off animation
+        OFFSET_MS = 100
+        self.app.after(OFFSET_MS, lambda s=session: self._update_playhead(s))
+
+        for time_sec, etype, data in events:
+            delay_ms = int(time_sec * 1000) + OFFSET_MS
+            if etype == 'symbol':
+                self.app.after(delay_ms, lambda s=session, sym=data: self._show_symbol(s, sym))
+            elif etype == 'letter':
+                self.app.after(delay_ms, lambda s=session, l=data: self._show_letter(s, l))
+            elif etype == 'word':
+                self.app.after(delay_ms, lambda s=session: self._show_word(s))
+
+    def on_close(self):
+        sd.stop()
+        self.app.quit()
+        self.app.destroy()
+
     def show(self):
         self.app.mainloop()
