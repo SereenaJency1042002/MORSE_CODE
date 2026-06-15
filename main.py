@@ -1,4 +1,4 @@
-from ui_display import UIDisplay
+from src.ui_display import UIDisplay
 
 class MorseApp:
     def __init__(self):
