@@ -1,0 +1,27 @@
+[project]
+name = "morse-decoder"
+version = "1.0.0"
+description = "Intelligent Morse Code Decoder — decodes audio files using signal processing and K-Means clustering"
+authors = [{ name = "Sereena Jency", email = "sereena2342@gmail.com" }]
+requires-python = ">=3.11"
+
+dependencies = [
+    "librosa>=0.11.0",
+    "scipy>=1.17.1",
+    "scikit-learn>=1.8.0",
+    "numpy>=2.4.6",
+    "matplotlib>=3.10.9",
+    "customtkinter>=5.2.2",
+    "sounddevice>=0.5.5",
+    "soundfile>=0.13.1",
+]
+
+[project.scripts]
+morse-decoder = "main:MorseApp.run"
+
+[tool.pip]
+index-url = "https://pypi.org/simple"
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.backends.legacy:build"
