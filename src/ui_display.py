@@ -249,9 +249,9 @@ class UIDisplay:
         self._start_spinner(session)
 
         def _process():
-            from audio_loader import AudioLoader
-            from signal_filter import SignalFilter
-            from morse_decoder import MorseDecoder, MORSE_CODE_DICT
+            from src.audio_loader import AudioLoader
+            from src.signal_filter import SignalFilter
+            from src.morse_decoder import MorseDecoder, MORSE_CODE_DICT
 
             y, sr = AudioLoader(self.audio_file).load()
             filtered = SignalFilter(y, sr).filter()
@@ -270,7 +270,7 @@ class UIDisplay:
         self.decode_btn.configure(state="normal", text="▶  Decode & Play")
 
         # Create figure on main thread (matplotlib requires this)
-        from signal_visualizer import SignalVisualizer
+        from src.signal_visualizer import SignalVisualizer
         fig = SignalVisualizer(filtered, sr).get_figure()
 
         # Embed graph
