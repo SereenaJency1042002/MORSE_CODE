@@ -3,4 +3,3 @@ __pycache__/
 audio_files/
 dist/
 build/
-main.spec
