@@ -3,20 +3,79 @@ import librosa
 from sklearn.cluster import KMeans
 
 MORSE_CODE_DICT = {
-    '.-': 'A',    '-...': 'B',  '-.-.': 'C',
-    '-..': 'D',   '.': 'E',     '..-.': 'F',
-    '--.': 'G',   '....': 'H',  '..': 'I',
-    '.---': 'J',  '-.-': 'K',   '.-..': 'L',
-    '--': 'M',    '-.': 'N',    '---': 'O',
-    '.--.': 'P',  '--.-': 'Q',  '.-.': 'R',
-    '...': 'S',   '-': 'T',     '..-': 'U',
-    '...-': 'V',  '.--': 'W',   '-..-': 'X',
-    '-.--': 'Y',  '--..': 'Z',
+    # Letters
+    '.-':   'A', '-...': 'B', '-.-.': 'C',
+    '-..':  'D', '.':    'E', '..-.': 'F',
+    '--.':  'G', '....': 'H', '..':   'I',
+    '.---': 'J', '-.-':  'K', '.-..': 'L',
+    '--':   'M', '-.':   'N', '---':  'O',
+    '.--.': 'P', '--.-': 'Q', '.-.':  'R',
+    '...':  'S', '-':    'T', '..-':  'U',
+    '...-': 'V', '.--':  'W', '-..-': 'X',
+    '-.--': 'Y', '--..': 'Z',
+
+    # Numbers
     '-----': '0', '.----': '1', '..---': '2',
     '...--': '3', '....-': '4', '.....': '5',
     '-....': '6', '--...': '7', '---..': '8',
-    '----.': '9'
+    '----.': '9',
+
+    # Punctuation
+    '.-.-.-': '.',
+    '--..--': ',',
+    '..--..': '?',
+    '-..-.':  '/',
+    '-...-':  '=',
+    '-.--.' : '(',
+    '-.--.-': ')',
+    '.-...':  '&',
+    '---...': ':',
+    '-.-.-.': ';',
+    '.-.-.':  '+',
+    '-....-': '-',
+    '..--.-': '_',
+    '.-..-.': '"',
+    '...-..-': '$',
+    '.--.-.' : '@',
+
+    # Prosigns (sent as joined — no gap between letters)
+    '.-.-':   'AA',  # New line
+    '-.-..-': 'CL',  # Clear — closing station
+    # '-.-.': 'CT' omitted — duplicates 'C' key, causes every C to decode as CT
+    '...-.':  'SN',  # Understood
+    '...-.-': 'SK',  # End of contact
+    # '.-.-.': 'AR' omitted — duplicates '+' key
+    '-...-.-':'BK',  # Break
+    '......': 'HH',  # Error — disregard
 }
+
+# Word list for intelligent correction
+WORD_LIST = [
+    # Common English
+    'HELLO', 'WORLD', 'YES', 'NO', 'THE', 'AND', 'FOR',
+    'ARE', 'BUT', 'NOT', 'YOU', 'ALL', 'CAN', 'HER',
+    'WAS', 'ONE', 'OUR', 'OUT', 'DAY', 'GET', 'HAS',
+    'HIM', 'HIS', 'HOW', 'ITS', 'MAY', 'NEW', 'NOW',
+    'OLD', 'SEE', 'TWO', 'WAY', 'WHO', 'BOY', 'DID',
+    'MAN', 'END', 'PUT', 'SAY', 'SHE', 'TOO', 'USE',
+
+    # Amateur radio prosigns
+    'CQ', 'DE', 'AR', 'SK', 'BK', 'KN', 'QSO',
+    'QTH', 'QRM', 'QRN', 'QRZ', 'QSB', 'QRP', 'QRO',
+    'QRX', 'QRT', 'QSL', 'QSY', 'QTR',
+
+    # Common ham radio words
+    'TNX', 'TKS', 'PSE', 'PLS', 'RST', 'RIG', 'ANT',
+    'PWR', 'OP', 'NAME', 'NR', 'NW', 'OM', 'YL', 'XYL',
+    'FB', 'OK', 'ROGER', 'COPY', 'OVER', 'OUT',
+    'SIGNAL', 'RADIO', 'STATION', 'BAND', 'FREQ',
+    'WATTS', 'METER', 'ANTENNA', 'REPORT',
+
+    # Numbers as words
+    'ONE', 'TWO', 'THREE', 'FOUR', 'FIVE',
+    'SIX', 'SEVEN', 'EIGHT', 'NINE', 'ZERO',
+]
+
 
 class MorseDecoder:
     def __init__(self, filtered_audio, sr, morse_code_dict):
@@ -53,6 +112,12 @@ class MorseDecoder:
         segments.append((bool(current), count, start))
 
         on_durations = np.array([d for s, d, _ in segments if s]).reshape(-1, 1)
+
+        # Filter out noise spikes
+        min_duration = np.mean(on_durations) * 0.3
+        segments = [(s, d, st) for s, d, st in segments if not s or d >= min_duration]
+
+        on_durations = np.array([d for s, d, _ in segments if s]).reshape(-1, 1)
         off_durations = np.array([d for s, d, _ in segments if not s]).reshape(-1, 1)
 
         if len(on_durations) < 2:
@@ -66,8 +131,6 @@ class MorseDecoder:
         centers = km_on.cluster_centers_.flatten()
         ratio = centers[dash_cluster] / (centers[dot_cluster] + 1e-9)
         if ratio < 2.0:
-            # Clusters too close — K-Means didn't find a clear dot/dash split.
-            # Fall back to mean-based threshold (dot < mean, dash >= mean).
             _on_split = float(np.mean(on_durations))
             _use_kmeans_on = False
         else:
@@ -79,8 +142,9 @@ class MorseDecoder:
         km_off.fit(off_durations)
         sorted_centers = np.sort(km_off.cluster_centers_.flatten())
 
-        # events = (time_seconds, event_type, data)
-        # event_type: 'symbol' (dot/dash), 'letter', 'word'
+        # Word gap threshold based on Morse timing rule
+        word_gap_threshold = (sorted_centers[1] + sorted_centers[2]) / 2 if n_off_clusters == 3 else None
+
         events = []
         current_char = []
 
@@ -98,7 +162,7 @@ class MorseDecoder:
                 label = km_off.predict([[duration]])[0]
                 center = km_off.cluster_centers_[label][0]
                 if n_off_clusters == 3:
-                    if center == sorted_centers[2]:
+                    if duration > word_gap_threshold:
                         if current_char:
                             letter = self.morse_code_dict.get(''.join(current_char), '?')
                             events.append((time_sec, 'letter', letter))

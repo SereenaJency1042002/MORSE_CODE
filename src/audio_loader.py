@@ -6,5 +6,5 @@ class AudioLoader:
 
     def load(self):
         # Load audio using librosa, y=audio data, sr=sampling rate
-        y, sr = librosa.load(self.audio_file)
+        y, sr = librosa.load(self.audio_file, sr=None)
         return y, sr 

@@ -21,7 +21,8 @@ _AMBER     = "#C17F24"   # amber (morse symbols)
 
 
 class UIDisplay:
-    def __init__(self):
+    def __init__(self, groq_api_key=None):
+        self.groq_api_key = groq_api_key
         self.audio_file = None
         self._playback_thread = None
         self._stop_playback = False
@@ -113,9 +114,9 @@ class UIDisplay:
         )
         self.morse_label.pack(pady=(10, 2))
 
-        # ── Decoded text ──────────────────────────────────────────────────────
+        # ── Decoded text (raw) ────────────────────────────────────────────────
         ctk.CTkLabel(
-            self.app, text="Decoded Text",
+            self.app, text="Decoded Text (Raw)",
             font=ctk.CTkFont(size=12, weight="bold"), text_color=_MUTED,
         ).pack(pady=(4, 2))
 
@@ -126,7 +127,22 @@ class UIDisplay:
             corner_radius=8,
             font=ctk.CTkFont(size=22, weight="bold"),
         )
-        self.text_box.pack(padx=30, pady=(0, 20), fill="x")
+        self.text_box.pack(padx=30, pady=(0, 8), fill="x")
+
+        # ── AI corrected text ─────────────────────────────────────────────────
+        ctk.CTkLabel(
+            self.app, text="AI Corrected Text (Groq)",
+            font=ctk.CTkFont(size=12, weight="bold"), text_color=_MUTED,
+        ).pack(pady=(4, 2))
+
+        self.ai_text_box = ctk.CTkTextbox(
+            self.app, height=75,
+            fg_color=_SURFACE, text_color=_TEXT,
+            border_color=_BORDER, border_width=1,
+            corner_radius=8,
+            font=ctk.CTkFont(size=22, weight="bold"),
+        )
+        self.ai_text_box.pack(padx=30, pady=(0, 20), fill="x")
 
     # ── file loading ──────────────────────────────────────────────────────────
 
@@ -246,23 +262,46 @@ class UIDisplay:
         # Show spinner immediately while processing runs in background
         self.decode_btn.configure(state="disabled", text="⏳  Processing...")
         self.text_box.delete("1.0", "end")
+        self.ai_text_box.delete("1.0", "end")
         self._start_spinner(session)
 
         def _process():
             from src.audio_loader import AudioLoader
             from src.signal_filter import SignalFilter
             from src.morse_decoder import MorseDecoder, MORSE_CODE_DICT
+            from src.intelligent_corrector import IntelligentCorrector
+            from src.groq_corrector import GroqCorrector
 
             y, sr = AudioLoader(self.audio_file).load()
             filtered = SignalFilter(y, sr).filter()
-            events, _ = MorseDecoder(filtered, sr, MORSE_CODE_DICT).decode_with_timing()
+            events, raw_text = MorseDecoder(filtered, sr, MORSE_CODE_DICT).decode_with_timing()
+
+            corrected_events, corrected_text = IntelligentCorrector().correct(events, raw_text)
+
+            raw_morse = ' '.join(d for _, et, d in corrected_events if et == 'symbol')
+
+            # Groq correction temporarily disabled
+            # if self.groq_api_key:
+            #     final_text = GroqCorrector(self.groq_api_key).correct(corrected_text, raw_morse)
+            # else:
+            #     final_text = corrected_text
+            final_text = corrected_text
+
+            # Pre-read original audio here (background thread) so _play() has no I/O delay
+            raw_data, raw_sr = sf.read(self.audio_file)
 
             # Pass filtered audio back to main thread for figure creation
-            self.app.after(0, lambda: self._on_decode_ready(session, y, sr, filtered, events))
+            self.app.after(0, lambda: self._on_decode_ready(session, y, sr, filtered, corrected_events, final_text, raw_data, raw_sr))
 
         threading.Thread(target=_process, daemon=True).start()
 
-    def _on_decode_ready(self, session, y, sr, filtered, events):
+    def _set_final_text(self, session, text):
+        if self._decode_session != session:
+            return
+        self.ai_text_box.delete("1.0", "end")
+        self.ai_text_box.insert("end", text)
+
+    def _on_decode_ready(self, session, y, sr, filtered, events, final_text="", raw_data=None, raw_sr=None):
         if self._decode_session != session:
             return
 
@@ -288,11 +327,16 @@ class UIDisplay:
         self.play_btn.configure(state="disabled")
         self.stop_btn.configure(state="normal")
 
-        # Capture start time right before audio starts for tight sync
+        # raw_data already loaded in background — _play() has no I/O, timestamp is tight
         def _play():
-            self._decode_start_time = time.time()
             try:
-                sd.play(y, sr)
+                if raw_data is not None:
+                    self._decode_start_time = time.time()
+                    sd.play(raw_data, raw_sr)
+                else:
+                    data, samplerate = sf.read(self.audio_file)
+                    self._decode_start_time = time.time()
+                    sd.play(data, samplerate)
                 sd.wait()
             finally:
                 self.app.after(0, self._on_playback_done)
@@ -300,8 +344,8 @@ class UIDisplay:
         self._playback_thread = threading.Thread(target=_play, daemon=True)
         self._playback_thread.start()
 
-        # Give the audio thread a moment to actually start, then kick off animation
-        OFFSET_MS = 100
+        # OFFSET_MS covers thread startup only (no file I/O in thread anymore)
+        OFFSET_MS = 50
         self.app.after(OFFSET_MS, lambda s=session: self._update_playhead(s))
 
         for time_sec, etype, data in events:
@@ -312,6 +356,10 @@ class UIDisplay:
                 self.app.after(delay_ms, lambda s=session, l=data: self._show_letter(s, l))
             elif etype == 'word':
                 self.app.after(delay_ms, lambda s=session: self._show_word(s))
+
+        if final_text:
+            settle_ms = max((int(t * 1000) for t, _, _ in events), default=0) + OFFSET_MS + 300
+            self.app.after(settle_ms, lambda s=session, txt=final_text: self._set_final_text(s, txt))
 
     def on_close(self):
         sd.stop()
