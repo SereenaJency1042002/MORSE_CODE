@@ -15,7 +15,7 @@ class SignalFilter:
         mask = (frequencies >= 200) & (frequencies <= 5000)
         peak_freq = frequencies[mask][np.argmax(fft[mask])]
         
-        # Step 2: Adaptive range — use wider band for safety
+        # Step 2: Adaptive range - use wider band for safety
         low  = max(100, peak_freq - 150)
         high = min(self.sampling_rate / 2 - 100, peak_freq + 150)
         
@@ -23,7 +23,7 @@ class SignalFilter:
         b, a = butter(5, [low, high], btype='band', fs=self.sampling_rate)
         filtered = filtfilt(b, a, self.audio_data)
         
-        # Safety check — if filter failed, return original audio
+        # Safety check - if filter failed, return original audio
         if np.isnan(filtered).any() or np.max(np.abs(filtered)) == 0:
             return self.audio_data
         
