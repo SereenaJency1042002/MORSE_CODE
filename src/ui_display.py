@@ -32,6 +32,7 @@ class UIDisplay:
         self._canvas_ref = None
         self._decode_start_time = 0
         self._audio_duration = 0
+        self.ai_visible = False
 
         self.app = ctk.CTk()
         self.app.title("Morse Code Decoder")
@@ -92,6 +93,12 @@ class UIDisplay:
         )
         self.stop_btn.pack(side="left", padx=6)
 
+        self.ai_btn = ctk.CTkButton(
+            btn_frame, text="🤖 Show AI Correction", width=180,
+            command=self.toggle_ai, **btn_style
+        )
+        self.ai_btn.pack(side="left", padx=6)
+
         # ── File status ───────────────────────────────────────────────────────
         self.file_label = ctk.CTkLabel(
             self.app, text="No file loaded",
@@ -129,26 +136,30 @@ class UIDisplay:
         )
         self.text_box.pack(padx=30, pady=(0, 8), fill="x")
 
-        # ── AI corrected text ─────────────────────────────────────────────────
+        # ── AI corrected text (hidden by default) ────────────────────────────
+        self.ai_frame = ctk.CTkFrame(self.app, fg_color="transparent")
+
         ctk.CTkLabel(
-            self.app, text="AI Corrected Text (Groq)",
+            self.ai_frame, text="AI Predicted Text (Groq)",
             font=ctk.CTkFont(size=12, weight="bold"), text_color=_MUTED,
         ).pack(pady=(4, 2))
 
         self.ai_text_box = ctk.CTkTextbox(
-            self.app, height=75,
+            self.ai_frame, height=75,
             fg_color=_SURFACE, text_color=_TEXT,
             border_color=_BORDER, border_width=1,
             corner_radius=8,
             font=ctk.CTkFont(size=22, weight="bold"),
         )
-        self.ai_text_box.pack(padx=30, pady=(0, 20), fill="x")
+        self.ai_text_box.pack(padx=0, pady=(0, 20), fill="x")
+
+        self.ai_frame.pack_forget()
 
     # ── file loading ──────────────────────────────────────────────────────────
 
     def load_file(self):
         file_path = filedialog.askopenfilename(
-            filetypes=[("Audio Files", "*.wav *.mp3")]
+            filetypes=[("Audio Files", "*.wav *.mp3 *.oga *.ogg")]
         )
         if file_path:
             self.audio_file = file_path
@@ -224,7 +235,7 @@ class UIDisplay:
         self._playhead.set_xdata([x, x])
         self._canvas_ref.draw_idle()
         if elapsed < self._audio_duration:
-            self.app.after(50, lambda s=session: self._update_playhead(s))
+            self.app.after(100, lambda s=session: self._update_playhead(s))
 
     # ── animated decode callbacks ─────────────────────────────────────────────
 
@@ -280,12 +291,10 @@ class UIDisplay:
 
             raw_morse = ' '.join(d for _, et, d in corrected_events if et == 'symbol')
 
-            # Groq correction temporarily disabled
-            # if self.groq_api_key:
-            #     final_text = GroqCorrector(self.groq_api_key).correct(corrected_text, raw_morse)
-            # else:
-            #     final_text = corrected_text
-            final_text = corrected_text
+            if self.groq_api_key:
+                final_text = GroqCorrector(self.groq_api_key).correct(corrected_text, raw_morse)
+            else:
+                final_text = corrected_text
 
             # Pre-read original audio here (background thread) so _play() has no I/O delay
             raw_data, raw_sr = sf.read(self.audio_file)
@@ -360,6 +369,16 @@ class UIDisplay:
         if final_text:
             settle_ms = max((int(t * 1000) for t, _, _ in events), default=0) + OFFSET_MS + 300
             self.app.after(settle_ms, lambda s=session, txt=final_text: self._set_final_text(s, txt))
+
+    def toggle_ai(self):
+        if self.ai_visible:
+            self.ai_frame.pack_forget()
+            self.ai_btn.configure(text="🤖 Show AI Correction")
+            self.ai_visible = False
+        else:
+            self.ai_frame.pack(padx=30, pady=(0, 20), fill="x")
+            self.ai_btn.configure(text="🙈 Hide AI Correction")
+            self.ai_visible = True
 
     def on_close(self):
         sd.stop()

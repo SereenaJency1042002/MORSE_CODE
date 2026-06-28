@@ -28,7 +28,7 @@ MORSE_CODE_DICT = {
     '-...-':  '=',
     '-.--.' : '(',
     '-.--.-': ')',
-    '.-...':  '&',
+    '.-...':  'AS',
     '---...': ':',
     '-.-.-.': ';',
     '.-.-.':  '+',
@@ -40,13 +40,14 @@ MORSE_CODE_DICT = {
 
     # Prosigns (sent as joined — no gap between letters)
     '.-.-':   'AA',  # New line
+    '-.-.-':  'KA',  # Starting signal (also CT)
     '-.-..-': 'CL',  # Clear — closing station
     # '-.-.': 'CT' omitted — duplicates 'C' key, causes every C to decode as CT
     '...-.':  'SN',  # Understood
     '...-.-': 'SK',  # End of contact
     # '.-.-.': 'AR' omitted — duplicates '+' key
     '-...-.-':'BK',  # Break
-    '......': 'HH',  # Error — disregard
+    '........': 'HH',  # Error — disregard (8 dots)
 }
 
 # Word list for intelligent correction
@@ -118,32 +119,39 @@ class MorseDecoder:
         segments = [(s, d, st) for s, d, st in segments if not s or d >= min_duration]
 
         on_durations = np.array([d for s, d, _ in segments if s]).reshape(-1, 1)
-        off_durations = np.array([d for s, d, _ in segments if not s]).reshape(-1, 1)
 
         if len(on_durations) < 2:
             return [], ""
 
+        # Find dot vs dash centers with K-means
         km_on = KMeans(n_clusters=2, n_init=10, random_state=0)
         km_on.fit(on_durations)
         dot_cluster = int(np.argmin(km_on.cluster_centers_))
         dash_cluster = 1 - dot_cluster
 
         centers = km_on.cluster_centers_.flatten()
-        ratio = centers[dash_cluster] / (centers[dot_cluster] + 1e-9)
-        if ratio < 2.0:
-            _on_split = float(np.mean(on_durations))
-            _use_kmeans_on = False
+        dot_center = centers[dot_cluster]
+        dash_center = centers[dash_cluster]
+        ratio = dash_center / (dot_center + 1e-9)
+
+        # Split at midpoint between cluster centers; fall back based on ratio
+        if ratio >= 1.8:
+            # Clear dot/dash separation — use midpoint
+            split = (dot_center + dash_center) / 2
+        elif ratio >= 1.5:
+            # Weak separation — use 60th percentile
+            split = float(np.percentile(on_durations, 60))
+            dot_center = float(np.percentile(on_durations, 25))
         else:
-            _on_split = None
-            _use_kmeans_on = True
+            # All pulses are the same duration (e.g. HH = 8 dots) — treat all as dots
+            split = float('inf')
+            dot_center = float(np.mean(on_durations))
 
-        n_off_clusters = min(3, len(off_durations))
-        km_off = KMeans(n_clusters=n_off_clusters, n_init=10, random_state=0)
-        km_off.fit(off_durations)
-        sorted_centers = np.sort(km_off.cluster_centers_.flatten())
-
-        # Word gap threshold based on Morse timing rule
-        word_gap_threshold = (sorted_centers[1] + sorted_centers[2]) / 2 if n_off_clusters == 3 else None
+        # Derive gap thresholds from unit (dot) duration — Morse timing ratios
+        # intra-char gap ≈ 1 unit, inter-char ≈ 3 units, inter-word ≈ 7 units
+        unit = dot_center
+        inter_char_threshold = unit * 2.0
+        word_gap_threshold = unit * 5.0
 
         events = []
         current_char = []
@@ -151,34 +159,22 @@ class MorseDecoder:
         for is_on, duration, start_frame in segments:
             time_sec = (start_frame * hop_length) / self.sr
             if is_on:
-                if _use_kmeans_on:
-                    label = km_on.predict([[duration]])[0]
-                    symbol = '.' if label == dot_cluster else '-'
-                else:
-                    symbol = '.' if duration < _on_split else '-'
+                symbol = '.' if duration < split else '-'
                 current_char.append(symbol)
                 events.append((time_sec, 'symbol', symbol))
             else:
-                label = km_off.predict([[duration]])[0]
-                center = km_off.cluster_centers_[label][0]
-                if n_off_clusters == 3:
-                    if duration > word_gap_threshold:
-                        if current_char:
-                            letter = self.morse_code_dict.get(''.join(current_char), '?')
-                            events.append((time_sec, 'letter', letter))
-                            current_char = []
-                        events.append((time_sec, 'word', ' '))
-                    elif center == sorted_centers[1]:
-                        if current_char:
-                            letter = self.morse_code_dict.get(''.join(current_char), '?')
-                            events.append((time_sec, 'letter', letter))
-                            current_char = []
-                else:
-                    if center == sorted_centers[-1]:
-                        if current_char:
-                            letter = self.morse_code_dict.get(''.join(current_char), '?')
-                            events.append((time_sec, 'letter', letter))
-                            current_char = []
+                if duration >= word_gap_threshold:
+                    if current_char:
+                        letter = self.morse_code_dict.get(''.join(current_char), '?')
+                        events.append((time_sec, 'letter', letter))
+                        current_char = []
+                    events.append((time_sec, 'word', ' '))
+                elif duration >= inter_char_threshold:
+                    if current_char:
+                        letter = self.morse_code_dict.get(''.join(current_char), '?')
+                        events.append((time_sec, 'letter', letter))
+                        current_char = []
+                # else: intra-character gap — continue building current_char
 
         if current_char:
             letter = self.morse_code_dict.get(''.join(current_char), '?')

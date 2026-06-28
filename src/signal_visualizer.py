@@ -18,8 +18,13 @@ class SignalVisualizer:
         
     def get_figure(self):
         fig, ax = plt.subplots(figsize=(8, 3))
-        time = np.linspace(0, len(self.audio_data) / self.sampling_rate, len(self.audio_data))
-        ax.plot(time, self.audio_data, color='#C17F24', linewidth=0.8)
+        data = self.audio_data
+        max_points = 5000
+        if len(data) > max_points:
+            step = len(data) // max_points
+            data = data[::step]
+        time = np.linspace(0, len(self.audio_data) / self.sampling_rate, len(data))
+        ax.plot(time, data, color='#C17F24', linewidth=0.8)
         ax.set_title('Morse Code Signal', color='#2C1A0E', fontsize=11)
         ax.set_xlabel('Time (s)', color='#8B6B4A', fontsize=9)
         ax.set_ylabel('Amplitude', color='#8B6B4A', fontsize=9)
