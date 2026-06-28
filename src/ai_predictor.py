@@ -55,7 +55,7 @@ Output: corrected text only, single line, no labels, no explanation.\
 _SHORT_THRESHOLD = 20
 
 
-class GroqCorrector:
+class AIPredictor:
     def __init__(self, api_key: str):
         self.api_key = api_key
 

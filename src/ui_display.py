@@ -281,7 +281,7 @@ class UIDisplay:
             from src.signal_filter import SignalFilter
             from src.morse_decoder import MorseDecoder, MORSE_CODE_DICT
             from src.intelligent_corrector import IntelligentCorrector
-            from src.groq_corrector import GroqCorrector
+            from src.ai_predictor import AIPredictor
 
             y, sr = AudioLoader(self.audio_file).load()
             filtered = SignalFilter(y, sr).filter()
@@ -292,7 +292,7 @@ class UIDisplay:
             raw_morse = ' '.join(d for _, et, d in corrected_events if et == 'symbol')
 
             if self.groq_api_key:
-                final_text = GroqCorrector(self.groq_api_key).correct(corrected_text, raw_morse)
+                final_text = AIPredictor(self.groq_api_key).correct(corrected_text, raw_morse)
             else:
                 final_text = corrected_text
 

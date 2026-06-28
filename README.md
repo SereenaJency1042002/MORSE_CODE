@@ -63,7 +63,7 @@ No algorithm was added for show. Each one solves a specific failure case.
 
 ### 4. It Demonstrates That OOP Enables Safe Extension
 
-When the first version was complete (loader + filter + decoder + GUI), adding error correction required **zero changes** to existing code. `IntelligentCorrector` was added as a new class. `GroqCorrector` was added as a separate optional class. `UIDisplay` was extended to call them.
+When the first version was complete (loader + filter + decoder + GUI), adding error correction required **zero changes** to existing code. `IntelligentCorrector` was added as a new class. `AIPredictor` was added as a separate optional class. `UIDisplay` was extended to call them.
 
 This is what the Open/Closed Principle looks like in practice: open for extension, closed for modification. The presentation can show two versions of the output side by side — raw decode vs. corrected — as proof that the architecture absorbed new functionality without breaking what existed.
 
@@ -94,7 +94,7 @@ Audio File (.wav / .mp3)
    (local, offline)     Levenshtein distance on decoded words
         |
         v
-   GroqCorrector        LLaMA 3.3 70B via Groq API (optional, requires API key)
+   AIPredictor          LLaMA 3.3 70B via Groq API (optional, requires API key)
    (AI, online)         Callsign-aware, prosign-aware, context-aware
         |
         v
@@ -116,7 +116,7 @@ morse_project/
 │   ├── signal_filter.py        ← SignalFilter (FFT + Butterworth)
 │   ├── morse_decoder.py        ← MorseDecoder (RMS + K-Means + dictionary)
 │   ├── intelligent_corrector.py← IntelligentCorrector (Hamming + Levenshtein)
-│   ├── groq_corrector.py       ← GroqCorrector (LLaMA 3.3 via Groq API)
+│   ├── ai_predictor.py         ← AIPredictor (LLaMA 3.3 via Groq API)
 │   ├── signal_visualizer.py    ← SignalVisualizer (matplotlib)
 │   └── ui_display.py           ← UIDisplay (customtkinter GUI)
 ├── create_test.py              ← generates a clean SOS test file at 700 Hz
@@ -188,7 +188,7 @@ This creates a clean SOS signal at 700 Hz in `audio_files/` — a known-correct 
 | `matplotlib` | Waveform rendering embedded in the GUI |
 | `customtkinter` | Modern desktop GUI (themes, rounded widgets) |
 | `sounddevice` | Audio playback in the UI |
-| `groq` | Groq API client for LLaMA 3.3 70B correction |
+| `groq` | Groq API client for running LLaMA 3.3 70B correction |
 
 ---
 
@@ -199,9 +199,9 @@ This creates a clean SOS signal at 700 Hz in `audio_files/` — a known-correct 
 - **Symbol correction:** when the decoder outputs `?` for an unrecognised Morse pattern, looks up the closest valid Morse code by Hamming distance (1 edit allowed)
 - **Word correction:** compares each decoded word against a word list using Levenshtein distance; replaces words that are 1 edit away from a known word
 
-### Layer 2 — GroqCorrector (requires API key)
+### Layer 2 — AIPredictor (requires API key)
 
-Sends the corrected text to LLaMA 3.3 70B with strict rules:
+Sends the corrected text to Meta's LLaMA 3.3 70B with strict rules:
 - Never alter callsigns (tokens containing at least one digit embedded in letters)
 - Never invent tokens to fill `?` gaps — only fill if context is certain
 - Accepts CQ, DE, SK, AR, 73 and other ham radio standard patterns unchanged
