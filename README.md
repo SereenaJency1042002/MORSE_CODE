@@ -438,6 +438,119 @@ Both go into IntelligentCorrector next.
 
 ---
 
+### Step 4 — IntelligentCorrector
+
+**What comes in:**
+- `events` — list of tuples from MorseDecoder: `[(time, 'symbol'/'letter'/'word', value), ...]`
+- `raw_text` — decoded string with possible errors: `"HEL?O W?RLD"`
+
+Two separate problems are fixed in two separate layers:
+
+| Error type | Example | Cause | Fix |
+|---|---|---|---|
+| Symbol error | pattern decoded as `?` | K-Means misclassified one dot/dash | Hamming distance on raw Morse pattern |
+| Word error | `HELO` instead of `HELLO` | segment lost or wrong | Levenshtein distance against word list |
+
+---
+
+**Layer 1 — Symbol correction**
+
+When a `?` letter event is encountered, the corrector walks backwards through already-processed events to collect the trailing `symbol` events — the raw dots and dashes that produced the unknown character.
+
+```python
+trailing = []
+for prev in reversed(corrected):
+    if prev[1] == 'symbol':
+        trailing.insert(0, prev[2])
+    else:
+        break
+raw_code = ''.join(trailing)   # e.g. '.--'
+```
+
+It then scans every entry in the Morse dictionary using Hamming distance:
+
+```
+'.--' vs '.-.'  (R) → distance 1  ← one position differs → accepted
+'.--' vs '---'  (O) → distance 2  → rejected
+```
+
+**What is Hamming distance?** Counts how many positions differ between two strings of equal length:
+
+```
+'.--'
+'.-.'
+ ✓ ✓ ✗  →  1 position differs  →  Hamming = 1
+```
+
+When lengths differ, the length difference is added as a penalty. A correction is only accepted if the distance is exactly 1 — never guesses at distance 2+.
+
+---
+
+**Layer 2 — Word correction**
+
+After symbol correction, the text is rebuilt and each word is checked against the word list using Levenshtein distance:
+
+```python
+tokens = raw_text.split()
+corrected_tokens = [self._closest_word(t) for t in tokens]
+```
+
+```python
+def _closest_word(self, word):
+    if word in self.word_set:   # already known → leave it
+        return word
+    if len(word) > 6:           # likely a callsign → don't touch
+        return word
+    # find closest word in list
+    for known in self.word_set:
+        d = _levenshtein(word, known)
+        ...
+    return best if best_dist <= 1 else word
+```
+
+**What is Levenshtein distance?** Minimum number of single-character operations — insert, delete, or substitute — to turn one string into another:
+
+```
+HELO  → HELLO    1 insertion   → distance 1  ✓ corrected
+WROLD → WORLD    2 operations  → distance 2  ✗ not corrected
+```
+
+**Why not Hamming here?** Hamming only works on equal-length strings. `HELO` and `HELLO` have different lengths. Levenshtein handles length differences naturally because it allows insertions and deletions.
+
+**Why cap at distance 1?** At distance 2+, multiple words could be equally close to the garbled input — picking one would be a guess. Staying at ≤ 1 ensures corrections are only made when there is one obviously close match.
+
+---
+
+**Full pipeline inside `correct()`**
+
+```python
+def correct(self, events, raw_text):
+    corrected_events = self.correct_symbols(events)       # fix '?' at symbol level
+    rebuilt = ''.join(d for _, et, d in corrected_events
+                      if et in ('letter', 'word'))        # rebuild text from fixed events
+    corrected_text = self.correct_text(rebuilt)           # fix words at word level
+    return corrected_events, corrected_text
+```
+
+Symbol correction runs first. Text is then rebuilt from the corrected events — not from `raw_text` — because symbol correction may have already changed some letters. Word correction runs on that rebuilt text.
+
+---
+
+**What comes out:**
+
+```
+raw_text:        "HEL?O W?RLD"
+after symbols:   "HELEO WERLD"    ← '?' replaced using Hamming on raw Morse
+after words:     "HELLO WORLD"    ← garbled words fixed using Levenshtein
+```
+
+- `corrected_events` — same format as `events`, `?` entries replaced where possible
+- `corrected_text` — string with both corrections applied
+
+Both go into AIPredictor next.
+
+---
+
 ## Project Structure
 
 ```
