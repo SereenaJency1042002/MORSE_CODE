@@ -258,6 +258,186 @@ The bandpass filter cannot remove noise that sits inside 550–850 Hz. That nois
 
 ---
 
+### Step 3 — MorseDecoder
+
+**What comes in:**
+- `filtered` — clean amplitude array from SignalFilter
+- `sr` — sample rate, unchanged since AudioLoader
+- `MORSE_CODE_DICT` — dictionary mapping `'.-'` → `'A'`, `'...'` → `'S'`, etc.
+
+---
+
+**Stage 1 — RMS envelope**
+
+```python
+frame_length = max(64, int(self.sr * 0.01))
+hop_length = frame_length // 2
+rms = librosa.feature.rms(y=self.filtered_audio, frame_length=frame_length, hop_length=hop_length)[0]
+```
+
+`filtered` is still an amplitude array oscillating thousands of times per second. A single sample cannot tell you whether the Morse tone is ON or OFF. RMS fixes this — it chops the array into 10ms overlapping windows and computes the energy of each window (square every value, take the mean, take the square root). The result is one energy value per window — a smooth curve that is high when the tone plays and near zero during silence.
+
+```
+filtered: [-0.04, 0.09, 0.10, 0.09, -0.04, 0.0, 0.0, ...]
+                  ↑ tone ON ↑            ↑ silence ↑
+
+rms:      [0.001, 0.08, 0.09, 0.08, 0.001, 0.001, ...]
+```
+
+---
+
+**Stage 2 — Adaptive threshold**
+
+```python
+noise_floor = np.max(rms) * 0.05
+active_rms  = rms[rms > noise_floor]
+threshold   = np.median(active_rms) * 0.6
+signal_on   = rms > threshold
+```
+
+Converts the continuous RMS curve into a binary array — True where the tone is ON, False where it is OFF. The threshold is derived from the recording itself (60% of the median active energy) so it scales with any loudness level. A fixed threshold would fail on quiet or loud files.
+
+```
+rms:       [0.001, 0.08, 0.09, 0.08, 0.001]
+threshold:  ─────────── 0.05 ──────────────
+signal_on: [False, True, True, True, False]
+```
+
+---
+
+**Stage 3 — Run-length segmentation**
+
+Collapses `signal_on` from thousands of True/False values into a compact list of segments. Each segment records whether it was ON or OFF, how long it lasted, and when it started.
+
+```
+signal_on: [F, F, T, T, T, T, F, F, F, T, T, F]
+
+segments:  [(False, 2, frame 0),   ← 2 frames OFF
+            (True,  4, frame 2),   ← 4 frames ON  → dot or dash?
+            (False, 3, frame 6),   ← 3 frames OFF → what gap?
+            (True,  2, frame 9),
+            (False, 1, frame 11)]
+```
+
+This is what K-Means needs — a list of durations, not a raw boolean array.
+
+---
+
+**Stage 4 — Noise spike removal**
+
+Any ON segment shorter than 30% of the average ON duration is discarded as a noise spike before K-Means runs.
+
+---
+
+**Stage 5 — K-Means: dot vs dash**
+
+```python
+km_on = KMeans(n_clusters=2, n_init=10, random_state=0)
+km_on.fit(on_durations)
+dot_cluster = int(np.argmin(km_on.cluster_centers_))
+```
+
+All ON durations go into K-Means. It groups them into 2 clusters — short (dots) and long (dashes) — and finds the natural boundary from the data itself. No hardcoded time threshold — the decoder learns the sender's speed from each specific file.
+
+```
+ON durations: [3, 4, 3, 11, 12, 3, 4, 11, 3]
+K-Means:  cluster 0 center = 3.5  ← dots
+          cluster 1 center = 11.3 ← dashes
+split = (3.5 + 11.3) / 2 = 7.4
+```
+
+**Fallback logic based on ratio (dash_center / dot_center):**
+
+| Ratio | Situation | What happens |
+|---|---|---|
+| ≥ 1.8 | Clear dot/dash separation | Use midpoint between cluster centers as split |
+| 1.5–1.8 | Weak separation | Use 60th percentile as split — more conservative |
+| < 1.5 | No separation (e.g. all dots like `HH`) | Set split = infinity — treat everything as dots |
+
+---
+
+**Stage 6 — Gap thresholds**
+
+```python
+unit = dot_center
+inter_char_threshold = unit * 2.0
+word_gap_threshold   = unit * 5.0
+```
+
+Derived from the actual dot duration measured from this file. Standard Morse timing ratios (dot=1, letter gap=3, word gap=7) give us the boundaries for classifying every silence.
+
+---
+
+**Stage 7 — Building events (where word detection happens)**
+
+```python
+events = []
+current_char = []   # buffer — collects dots/dashes for ONE letter
+```
+
+`current_char` is a temporary notepad. Dots and dashes accumulate in it until a silence tells us the character is finished.
+
+Walking through `...` `---` `...` (SOS):
+
+```
+ON  short → '.'  → current_char = ['.']
+OFF small → intra-char gap → do nothing
+ON  short → '.'  → current_char = ['.', '.']
+OFF small → intra-char gap → do nothing
+ON  short → '.'  → current_char = ['.', '.', '.']
+OFF LARGE → letter gap → flush!
+            '...' → dict lookup → 'S'
+            events ← (time, 'letter', 'S')
+            current_char = []   ← reset
+
+ON  long  → '-'  → current_char = ['-']
+... (same process) → 'O'
+... → 'S'
+```
+
+**Word detection** happens when an OFF segment exceeds `word_gap_threshold`:
+
+```python
+if duration >= word_gap_threshold:
+    letter = dict.get(''.join(current_char), '?')
+    events.append((time_sec, 'letter', letter))   # close current letter
+    events.append((time_sec, 'word', ' '))        # ← word boundary detected
+```
+
+Three types of silence, three different actions:
+
+| Silence duration | Meaning | Action |
+|---|---|---|
+| < inter_char_threshold | Within a letter | Do nothing — keep building current_char |
+| ≥ inter_char_threshold | Between letters | Flush current_char → add letter event |
+| ≥ word_gap_threshold | Between words | Flush current_char → add letter + space event |
+
+`'?'` is returned when the accumulated dot/dash pattern has no match in the dictionary.
+
+---
+
+**What comes out**
+
+```python
+return events, full_text
+```
+
+`events` — list of tuples with timestamps, used by UIDisplay for animation:
+```python
+[(0.12, 'symbol', '.'),
+ (0.31, 'letter', 'S'),
+ (0.45, 'word',   ' '), ...]
+```
+
+`full_text` — plain string joined from all letter and word events:
+```
+"HEL?O W?RLD"
+```
+
+Both go into IntelligentCorrector next.
+
+---
+
 ## Project Structure
 
 ```
