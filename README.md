@@ -551,6 +551,114 @@ Both go into AIPredictor next.
 
 ---
 
+### Step 5 — AIPredictor
+
+**What comes in:**
+- `corrected_text` — string from IntelligentCorrector, already had Hamming and Levenshtein applied
+- `api_key` — Groq API key from `.env` file
+
+**Why this layer exists:**
+
+IntelligentCorrector fixes symbols and words in isolation — it has no understanding of context. It cannot handle:
+- `CQ`, `DE`, `SK` — ham radio conventions that look like errors to a spell checker but are correct
+- Callsigns like `W1AW` — must never be changed, not even one character
+- `TA` at the end of a transmission — almost certainly `TU` (Thank You), a known timing error, but only recognisable from context
+- `?` where surrounding words strongly suggest the value — e.g. `CQ CQ ? W1AW` → the `?` is almost certainly `CQ`
+
+LLaMA 3.3 understands all of this because it has language-level knowledge of ham radio conventions.
+
+---
+
+**Stage 1 — Early exit**
+
+```python
+clean = decoded_text.replace('?', '').replace(' ', '').strip()
+if not clean:
+    return decoded_text
+```
+
+If the entire text is nothing but `?` and spaces, there is nothing for the model to work with. Return immediately without making an API call.
+
+---
+
+**Stage 2 — Choose prompt based on length**
+
+```python
+is_long = len(clean) > 20
+prompt = _LONG_PRED_PROMPT if is_long else _SHORT_PRED_PROMPT
+max_tokens = 250 if is_long else 60
+```
+
+Two prompts exist because short and long transmissions have different characteristics:
+
+| | Short (≤ 20 chars) | Long (> 20 chars) |
+|---|---|---|
+| Prompt | Simple rules — protect prosigns and callsigns | Full ham radio exchange patterns |
+| Extra knowledge | — | `CQ CQ <callsign>`, `DE`, `5NN TU`, `73 SK`, `TA → TU` |
+| Max output | 60 tokens | 250 tokens |
+
+---
+
+**Stage 3 — The API call**
+
+```python
+response = client.chat.completions.create(
+    model="llama-3.3-70b-versatile",
+    messages=[
+        {"role": "system", "content": prompt},
+        {"role": "user",   "content": f"Decoded text: {decoded_text}"},
+    ],
+    temperature=0.0,
+    max_tokens=max_tokens,
+)
+```
+
+`messages` uses the chat format with two roles:
+- `"system"` — sets the rules for how the model must behave. Read first, followed for the entire response
+- `"user"` — the actual text to correct
+
+`temperature=0.0` — fully deterministic output. Temperature controls randomness. At 0.0 the model always picks the highest-probability token — same input always gives the same output. At 1.0 the model would give different answers on different runs. For a decoder, determinism is required.
+
+`model="llama-3.3-70b-versatile"` — Meta's LLaMA 3.3, 70 billion parameters, running on Groq's LPU hardware. The model is instruction-tuned — trained to follow structured rules in a system prompt, not just predict the next token.
+
+---
+
+**Stage 4 — Extract result**
+
+```python
+result = response.choices[0].message.content.strip()
+return result.split('\n')[0].strip()
+```
+
+`.split('\n')[0]` takes only the first line in case the model returned extra explanation despite being told not to. The prompt instructs "single line, no labels" but this enforces it in code as a safety net.
+
+---
+
+**Stage 5 — Silent fallback**
+
+```python
+except Exception:
+    return decoded_text
+```
+
+If anything fails — no internet, wrong API key, rate limit, Groq is down — the exception is caught silently and the IntelligentCorrector output is returned unchanged. The app never crashes because of the AI layer.
+
+---
+
+**What comes out:**
+
+```
+corrected_text (in):  "CQ CQ TA W1AW"
+final_text (out):     "CQ CQ TU W1AW"
+                               ↑
+                       TA → TU fixed by context
+                       W1AW unchanged — callsign protected
+```
+
+`final_text` goes into UIDisplay to be shown to the user.
+
+---
+
 ## Project Structure
 
 ```
