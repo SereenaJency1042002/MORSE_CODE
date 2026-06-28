@@ -106,6 +106,158 @@ Audio File (.wav / .mp3)
 
 ---
 
+## Data Flow — Step by Step
+
+### What each class receives and returns
+
+```
+audio file path (string)
+        │
+        ▼
+AudioLoader(audio_file).load()
+        │
+        │  y  — numpy float32 array, one amplitude value per sample
+        │  sr — integer, samples per second (e.g. 44100)
+        ▼
+SignalFilter(y, sr).filter()
+        │
+        │  filtered — numpy float32 array, same shape as y, noise removed
+        │  sr       — passed through unchanged
+        ▼
+MorseDecoder(filtered, sr, MORSE_CODE_DICT).decode_with_timing()
+        │
+        │  events   — list of (time_sec, event_type, value) tuples
+        │  raw_text — string, e.g. "HEL?O WR?LD"
+        ▼
+IntelligentCorrector().correct(events, raw_text)
+        │
+        │  corrected_events — same format as events, '?' replaced where possible
+        │  corrected_text   — string, e.g. "HELLO WORLD"
+        ▼
+AIPredictor(api_key).correct(corrected_text, raw_morse)
+        │
+        │  final_text — string, context-aware corrected output
+        ▼
+SignalVisualizer(filtered, sr).get_figure()
+        │
+        │  fig — matplotlib Figure object (waveform graph)
+        ▼
+UIDisplay
+        displays fig + final_text to the user
+```
+
+---
+
+### Step 1 — AudioLoader
+
+**What is `y`?**
+
+`y` is a numpy array of float32 numbers — one number per audio sample. Not binary. Each number is the amplitude of the sound wave at that instant — how much air pressure was displaced. Values range between -1.0 and +1.0.
+
+```
+y = [-0.002, 0.015, 0.043, 0.091, 0.102, 0.089, ...]
+```
+
+A 3-second file at 44100 Hz produces an array of 132,300 numbers.
+
+**What is a sample?**
+
+Sound is a continuous wave. A computer cannot store something continuous, so it takes a snapshot of the amplitude at regular intervals and stores each snapshot as a number. One sample = one amplitude measurement at one point in time.
+
+```
+Real sound wave:        ___         ___
+                       /   \       /   \
+                 ______/     \_____/     \______
+
+Sampled (44100 times/sec):
+time →   0ms    0.02ms   0.04ms   0.06ms
+value:   0.0    0.043    0.091    0.102
+```
+
+The array `y` is all those values lined up in order.
+
+**What is `sr` and where does it come from?**
+
+`sr` = sample rate — how many samples exist per second of audio (e.g. 44100, 22050).
+
+The critical line is:
+```python
+y, sr = librosa.load(self.audio_file, sr=None)
+```
+
+`sr=None` tells librosa to read the sample rate directly from the file's own metadata — whatever the MP3 or WAV was recorded at. If you wrote `sr=22050` instead, librosa would force-resample everything to 22050 Hz regardless of the original. We do not set it — we read it.
+
+`sr` matters because every time calculation in the pipeline depends on it. If `sr` were wrong, every frequency calculation would be off and the filter would target the wrong frequency.
+
+---
+
+### Step 2 — SignalFilter
+
+`y` contains amplitude over time. But it does not directly tell you which frequencies are present. Amplitude and frequency are two different properties of the same wave:
+
+- **Amplitude** — how loud the sound is (how much the wave moves up and down)
+- **Frequency** — how fast it oscillates (how many times per second it goes up and down)
+
+A 700 Hz Morse tone means the amplitude oscillates 700 times per second. That information is hidden inside the numbers of `y`.
+
+**FFT — extracting the frequency**
+
+```python
+fft = np.abs(np.fft.rfft(self.audio_data))
+frequencies = np.fft.rfftfreq(len(self.audio_data), 1/self.sampling_rate)
+mask = (frequencies >= 200) & (frequencies <= 5000)
+peak_freq = frequencies[mask][np.argmax(fft[mask])]
+```
+
+FFT converts `y` from "amplitude over time" into "energy at each frequency". The result shows which frequencies have the most energy.
+
+```
+Input  y:   [0.0, 0.043, 0.091, ...]  ← amplitude over time
+Output fft: [0.001, 0.0, 0.892, ...]  ← energy at each frequency
+```
+
+The code searches between 200–5000 Hz and finds the frequency with the highest energy spike — that is the Morse tone.
+
+**How does it distinguish the Morse tone from noise?**
+
+The Morse tone concentrates ALL its energy at one frequency — producing a sharp tall spike. Noise spreads its energy thin across hundreds of frequencies — producing only tiny bumps. `argmax` always picks the tallest spike, which is always the Morse tone.
+
+```
+Energy
+  │          █   ← Morse tone: one huge spike
+  │          █
+  │  ▁ ▁ ▁ ▁█▁ ▁ ▁ ▁   ← noise: tiny bumps spread everywhere
+  │_______________________________→ Frequency
+     200   700Hz  5000
+```
+
+**Butterworth bandpass filter**
+
+```python
+b, a = butter(5, [low, high], btype='band', fs=self.sampling_rate)
+filtered = filtfilt(b, a, self.audio_data)
+```
+
+`butter` designs the filter — it calculates coefficients `b` and `a` that describe "let through 550–850 Hz, block everything else." It does not filter anything yet, it just produces the recipe.
+
+`filtfilt` applies the recipe to `y`. For every sample, it computes a weighted sum of the current and recent samples using the `b` and `a` values — designed so that frequencies inside the range reinforce each other and frequencies outside cancel each other out.
+
+The output `filtered` looks almost identical to `y` because the Morse tone was already dominant. The filter just removes the small noise contributions at other frequencies.
+
+`filtfilt` runs the filter twice — forward then backward — so the two phase shifts cancel. This gives zero phase shift. A single forward-only pass would shift every tone boundary slightly in time, making dots appear longer than they are and corrupting the decoder's duration measurements.
+
+**What about noise inside the passband?**
+
+The bandpass filter cannot remove noise that sits inside 550–850 Hz. That noise is handled by later steps:
+
+| Noise type | Handled by |
+|---|---|
+| Outside 550–850 Hz | Butterworth filter removes it |
+| Inside 550–850 Hz but weak | Adaptive threshold in MorseDecoder ignores it |
+| Inside 550–850 Hz, briefly crosses threshold | Spike removal in MorseDecoder discards it |
+
+---
+
 ## Project Structure
 
 ```
