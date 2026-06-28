@@ -46,7 +46,11 @@ hiddenimports += [
     'src.signal_filter',
     'src.signal_visualizer',
     'src.morse_decoder',
+    'src.intelligent_corrector',
+    'src.ai_predictor',
     'src.ui_display',
+    'groq',
+    'dotenv',
 ]
 
 # Include config.json and the src package folder
