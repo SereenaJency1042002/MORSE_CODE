@@ -1,23 +1,35 @@
-import customtkinter as ctk
-from tkinter import filedialog
-from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+import random
 import threading
 import time
+from tkinter import filedialog
+
+import customtkinter as ctk
+import numpy as np
+import matplotlib.pyplot as plt
 import sounddevice as sd
 import soundfile as sf
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+from matplotlib.colors import LinearSegmentedColormap
 
-ctk.set_appearance_mode("light")
-ctk.set_default_color_theme("dark-blue")
+ctk.set_appearance_mode("dark")
 
-# Brown palette
-_BG        = "#F2E4CC"   # warm parchment
-_SURFACE   = "#FDF6EC"   # lighter cream (graph, textbox)
-_BORDER    = "#D4B896"   # tan border
-_TEXT      = "#2C1A0E"   # dark espresso
-_MUTED     = "#8B6B4A"   # medium brown
-_BUTTON    = "#6B3A2A"   # mahogany (all buttons same color)
-_BTN_HOVER = "#5A2F22"   # darker mahogany
-_AMBER     = "#C17F24"   # amber (morse symbols)
+# Dark radio-style palette
+_BG        = "#0a0a0a"   # main background
+_PANEL     = "#111111"   # left panel background
+_BORDER    = "#222222"   # hairline borders
+_BORDER2   = "#333333"   # button outline (neutral)
+_GREEN     = "#00ff41"   # primary accent
+_GREEN_LINE = "#00c835"  # waveform line
+_ORANGE    = "#ff6600"   # secondary accent
+_RED       = "#ff4444"   # stop / alert
+_CYAN      = "#00ccff"   # AI predicted text
+_MUTED     = "#555555"   # small caption labels
+_MUTED2    = "#444444"   # section labels / axes
+_TEXT      = "#cccccc"   # neutral button text
+
+_SDR_CMAP = LinearSegmentedColormap.from_list(
+    "sdr", ["#000000", "#001a33", "#ff6600", "#ffff00"]
+)
 
 
 class UIDisplay:
@@ -33,127 +45,350 @@ class UIDisplay:
         self._decode_start_time = 0
         self._audio_duration = 0
         self.ai_visible = False
+        self._loading = False
+        self._smeter_active = False
+        self._pulse_on = False
 
         self.app = ctk.CTk()
-        self.app.title("Morse Code Decoder")
-        self.app.geometry("940x780")
+        self.app.title("CW Decoder — Morse Code Decoder")
+        self.app.geometry("1200x700")
+        self.app.minsize(1200, 700)
         self.app.configure(fg_color=_BG)
 
-        self._build_ui()
+        self._build_left_panel()
+        self._build_right_panel()
+        self._animate_smeter()
+        self._animate_status_pulse()
+
         self.app.protocol("WM_DELETE_WINDOW", self.on_close)
 
-    def _build_ui(self):
-        self._loading = False
-        # ── Title ─────────────────────────────────────────────────────────────
+    # ── small helpers ─────────────────────────────────────────────────────────
+
+    def _spaced(self, text):
+        return " ".join(list(text))
+
+    def _make_outline_button(self, parent, text, command, border_color, text_color=None, state="normal"):
+        text_color = text_color or border_color
+        btn = ctk.CTkButton(
+            parent, text=text, command=command, state=state,
+            fg_color=_BG, hover_color="#151515",
+            border_width=1, border_color=border_color, text_color=text_color,
+            font=ctk.CTkFont(family="Courier New", size=11, weight="bold"),
+            corner_radius=4, height=32,
+        )
+
+        def _on_enter(_e):
+            btn.configure(border_color=_GREEN, text_color=_GREEN)
+
+        def _on_leave(_e):
+            btn.configure(border_color=border_color, text_color=text_color)
+
+        btn.bind("<Enter>", _on_enter)
+        btn.bind("<Leave>", _on_leave)
+        return btn
+
+    def _set_status(self, text, color):
+        self.status_label.configure(text=text, text_color=color)
+        self.status_dot.configure(text_color=color)
+
+    # ── left panel ────────────────────────────────────────────────────────────
+
+    def _build_left_panel(self):
+        self.left_panel = ctk.CTkFrame(self.app, fg_color=_PANEL, width=360, corner_radius=0)
+        self.left_panel.pack(side="left", fill="y")
+        self.left_panel.pack_propagate(False)
+
+        # Title
+        title_frame = ctk.CTkFrame(self.left_panel, fg_color=_PANEL)
+        title_frame.pack(fill="x")
         ctk.CTkLabel(
-            self.app,
-            text="Morse Code Decoder",
-            font=ctk.CTkFont(size=26, weight="bold"),
-            text_color=_TEXT,
-        ).pack(pady=(20, 4))
+            title_frame, text="C W  D E C O D E R",
+            font=ctk.CTkFont(size=22, weight="bold"), text_color=_GREEN,
+        ).pack(pady=(20, 10))
+        ctk.CTkFrame(title_frame, fg_color=_BORDER, height=1).pack(fill="x")
+
+        # Frequency display
+        freq_box = ctk.CTkFrame(self.left_panel, fg_color=_BG, border_color=_BORDER, border_width=1, corner_radius=6)
+        freq_box.pack(fill="x", padx=16, pady=(16, 10))
+        ctk.CTkLabel(freq_box, text=self._spaced("FREQUENCY"), font=ctk.CTkFont(size=9), text_color=_MUTED).pack(pady=(8, 0))
+        self.freq_entry = ctk.CTkEntry(
+            freq_box, fg_color=_BG, border_width=0, justify="center",
+            font=ctk.CTkFont(family="Courier New", size=32, weight="bold"),
+            text_color=_ORANGE,
+        )
+        self.freq_entry.insert(0, "14.020")
+        self.freq_entry.pack()
+        ctk.CTkLabel(freq_box, text="MHz", font=ctk.CTkFont(size=9), text_color=_MUTED).pack(pady=(0, 8))
+
+        # WPM / SIGNAL
+        metrics_frame = ctk.CTkFrame(self.left_panel, fg_color=_PANEL)
+        metrics_frame.pack(fill="x", padx=16, pady=(0, 10))
+        metrics_frame.columnconfigure(0, weight=1)
+        metrics_frame.columnconfigure(1, weight=1)
+
+        wpm_box = ctk.CTkFrame(metrics_frame, fg_color=_BG, border_color=_BORDER, border_width=1, corner_radius=6)
+        wpm_box.grid(row=0, column=0, sticky="nsew", padx=(0, 4))
+        ctk.CTkLabel(wpm_box, text=self._spaced("WPM"), font=ctk.CTkFont(size=9), text_color=_MUTED).pack(pady=(6, 0))
+        self.wpm_value_label = ctk.CTkLabel(wpm_box, text="---", font=ctk.CTkFont(size=20, weight="bold"), text_color=_GREEN)
+        self.wpm_value_label.pack(pady=(0, 6))
+
+        signal_box = ctk.CTkFrame(metrics_frame, fg_color=_BG, border_color=_BORDER, border_width=1, corner_radius=6)
+        signal_box.grid(row=0, column=1, sticky="nsew", padx=(4, 0))
+        ctk.CTkLabel(signal_box, text=self._spaced("SIGNAL"), font=ctk.CTkFont(size=9), text_color=_MUTED).pack(pady=(6, 0))
+        self.signal_value_label = ctk.CTkLabel(signal_box, text="S--", font=ctk.CTkFont(size=20, weight="bold"), text_color=_ORANGE)
+        self.signal_value_label.pack(pady=(0, 6))
+
+        # S-meter
+        smeter_frame = ctk.CTkFrame(self.left_panel, fg_color=_PANEL)
+        smeter_frame.pack(fill="x", padx=16, pady=(0, 10))
+        ctk.CTkLabel(smeter_frame, text=self._spaced("S-METER"), font=ctk.CTkFont(size=9), text_color=_MUTED).pack(anchor="w")
+
+        bars_row = ctk.CTkFrame(smeter_frame, fg_color=_PANEL)
+        bars_row.pack(fill="x", pady=(4, 0))
+        heights = [6, 8, 10, 12, 14, 17, 20, 23, 26]
+        self._smeter_bright = [_GREEN] * 5 + ["#ffaa00"] * 2 + [_RED] * 2
+        self._smeter_dim = ["#0a2e14"] * 5 + ["#332200"] * 2 + ["#330a0a"] * 2
+        self.smeter_bars = []
+        for h, dim_c in zip(heights, self._smeter_dim):
+            bar = ctk.CTkFrame(bars_row, fg_color=dim_c, width=12, height=h, corner_radius=1)
+            bar.pack(side="left", anchor="s", padx=1)
+            bar.pack_propagate(False)
+            self.smeter_bars.append(bar)
 
         ctk.CTkLabel(
-            self.app,
-            text="Load an audio file and decode its Morse signal",
-            font=ctk.CTkFont(size=12),
-            text_color=_MUTED,
-        ).pack(pady=(0, 12))
+            smeter_frame, text="1     3     5     7     9",
+            font=ctk.CTkFont(size=8, family="Courier New"), text_color=_MUTED,
+        ).pack(anchor="w", pady=(2, 0))
 
-        # ── Buttons (all same mahogany color) ─────────────────────────────────
-        btn_frame = ctk.CTkFrame(self.app, fg_color="transparent")
-        btn_frame.pack(pady=(0, 8))
-
-        btn_style = dict(
-            fg_color=_BUTTON, hover_color=_BTN_HOVER,
-            font=ctk.CTkFont(size=13, weight="bold"),
-            corner_radius=8, height=36,
+        # Device selector
+        device_frame = ctk.CTkFrame(self.left_panel, fg_color=_PANEL)
+        device_frame.pack(fill="x", padx=16, pady=(0, 10))
+        ctk.CTkLabel(device_frame, text=self._spaced("INPUT DEVICE"), font=ctk.CTkFont(size=9), text_color=_MUTED).pack(anchor="w")
+        self.device_menu = ctk.CTkOptionMenu(
+            device_frame, values=["Loading..."],
+            fg_color=_BG, button_color=_BG, button_hover_color="#151515",
+            text_color=_GREEN, font=ctk.CTkFont(family="Courier New", size=10),
+            dropdown_fg_color=_BG, dropdown_text_color=_GREEN,
         )
+        self.device_menu.pack(fill="x", pady=(4, 0))
+        self._populate_devices()
 
-        self.load_btn = ctk.CTkButton(
-            btn_frame, text="📂  Load File", width=140,
-            command=self.load_file, **btn_style
-        )
-        self.load_btn.pack(side="left", padx=6)
+        # Buttons
+        btn_stack = ctk.CTkFrame(self.left_panel, fg_color=_PANEL)
+        btn_stack.pack(fill="x", padx=16, pady=(4, 10))
 
-        self.decode_btn = ctk.CTkButton(
-            btn_frame, text="▶  Decode & Play", width=160,
-            command=self.decode, **btn_style
-        )
-        self.decode_btn.pack(side="left", padx=6)
+        self.load_btn = self._make_outline_button(btn_stack, "LOAD FILE", self.load_file, _BORDER2, _TEXT)
+        self.load_btn.pack(fill="x", pady=3)
 
-        self.play_btn = ctk.CTkButton(
-            btn_frame, text="🔊  Play Audio", width=140,
-            state="disabled", command=self.play_audio, **btn_style
-        )
-        self.play_btn.pack(side="left", padx=6)
+        self.decode_btn = self._make_outline_button(btn_stack, "DECODE & PLAY", self.decode, _BORDER2, _TEXT)
+        self.decode_btn.pack(fill="x", pady=3)
 
-        self.stop_btn = ctk.CTkButton(
-            btn_frame, text="⏹  Stop", width=100,
-            state="disabled", command=self.stop_audio, **btn_style
-        )
-        self.stop_btn.pack(side="left", padx=6)
+        self.play_btn = self._make_outline_button(btn_stack, "PLAY AUDIO", self.play_audio, _BORDER2, _TEXT, state="disabled")
+        self.play_btn.pack(fill="x", pady=3)
 
-        self.ai_btn = ctk.CTkButton(
-            btn_frame, text="🤖 Show AI Correction", width=180,
-            command=self.toggle_ai, **btn_style
-        )
-        self.ai_btn.pack(side="left", padx=6)
+        self.start_live_btn = self._make_outline_button(btn_stack, "START LIVE", self.start_live, _GREEN, _GREEN)
+        self.start_live_btn.pack(fill="x", pady=3)
 
-        # ── File status ───────────────────────────────────────────────────────
+        self.stop_btn = self._make_outline_button(btn_stack, "STOP", self.stop_audio, _RED, _RED, state="disabled")
+        self.stop_btn.pack(fill="x", pady=3)
+
+        # File status
         self.file_label = ctk.CTkLabel(
-            self.app, text="No file loaded",
-            font=ctk.CTkFont(size=11), text_color=_MUTED,
+            self.left_panel, text="No file loaded",
+            font=ctk.CTkFont(size=10, family="Courier New"), text_color=_MUTED,
+            wraplength=320, justify="left",
         )
-        self.file_label.pack(pady=(2, 6))
+        self.file_label.pack(fill="x", padx=16, pady=(0, 10))
 
-        # ── Graph frame ───────────────────────────────────────────────────────
-        self.graph_frame = ctk.CTkFrame(
-            self.app, fg_color=_SURFACE,
-            border_color=_BORDER, border_width=1, corner_radius=10,
-        )
-        self.graph_frame.pack(padx=30, pady=6, fill="both", expand=True)
+        # AI toggle
+        self.ai_btn = self._make_outline_button(self.left_panel, "◈ SHOW AI PREDICTION", self.toggle_ai, _ORANGE, _ORANGE)
+        self.ai_btn.pack(fill="x", padx=16, pady=(0, 10))
 
-        # ── Live morse label (amber, bold) ────────────────────────────────────
+        # Status bar (pinned to bottom)
+        status_bar = ctk.CTkFrame(self.left_panel, fg_color=_PANEL)
+        status_bar.pack(side="bottom", fill="x", padx=16, pady=(8, 16))
+        self.status_dot = ctk.CTkLabel(status_bar, text="●", font=ctk.CTkFont(size=10), text_color=_GREEN, width=14)
+        self.status_dot.pack(side="left")
+        self.status_label = ctk.CTkLabel(status_bar, text="READY", font=ctk.CTkFont(size=10), text_color=_MUTED)
+        self.status_label.pack(side="left")
+
+    def _populate_devices(self):
+        try:
+            devices = sd.query_devices()
+            input_devices = [(i, d["name"]) for i, d in enumerate(devices) if d["max_input_channels"] > 0]
+            if not input_devices:
+                raise RuntimeError("No input devices found")
+            names = []
+            for idx, name in input_devices:
+                label = f"★ {name}" if "cable" in name.lower() else name
+                names.append(label)
+            self.device_menu.configure(values=names)
+            self.device_menu.set(names[0])
+        except Exception:
+            self.device_menu.configure(values=["FILE MODE ONLY"], state="disabled")
+            self.device_menu.set("FILE MODE ONLY")
+
+    def start_live(self):
+        self._set_status("LIVE MODE — connect VB-Cable", _ORANGE)
+
+    # ── right panel ───────────────────────────────────────────────────────────
+
+    def _build_right_panel(self):
+        self.right_panel = ctk.CTkFrame(self.app, fg_color=_BG, corner_radius=0)
+        self.right_panel.pack(side="left", fill="both", expand=True)
+        self.right_panel.columnconfigure(0, weight=1)
+        self.right_panel.rowconfigure(0, weight=35)
+        self.right_panel.rowconfigure(1, weight=38)
+        self.right_panel.rowconfigure(2, weight=27)
+
+        self._build_waveform()
+        self._build_waterfall()
+        self._build_text_boxes()
+
+    def _build_waveform(self):
+        wave_frame = ctk.CTkFrame(self.right_panel, fg_color=_BG)
+        wave_frame.grid(row=0, column=0, sticky="nsew", padx=12, pady=(12, 4))
+        ctk.CTkLabel(wave_frame, text=self._spaced("SIGNAL WAVEFORM"), font=ctk.CTkFont(size=9), text_color=_MUTED2).pack(anchor="w")
+
+        self.graph_frame = ctk.CTkFrame(wave_frame, fg_color=_BG, border_color=_BORDER, border_width=1, corner_radius=6)
+        self.graph_frame.pack(fill="both", expand=True, pady=(2, 0))
+
+    def _build_waterfall(self):
+        water_frame = ctk.CTkFrame(self.right_panel, fg_color=_BG)
+        water_frame.grid(row=1, column=0, sticky="nsew", padx=12, pady=4)
+        ctk.CTkLabel(water_frame, text=self._spaced("WATERFALL"), font=ctk.CTkFont(size=9), text_color=_MUTED2).pack(anchor="w")
+
+        self.waterfall_container = ctk.CTkFrame(water_frame, fg_color=_BG, border_color=_BORDER, border_width=1, corner_radius=6)
+        self.waterfall_container.pack(fill="both", expand=True, pady=(2, 0))
+        self._build_waterfall_idle()
+
+    def _build_waterfall_idle(self):
+        fig, ax = plt.subplots(figsize=(8, 2.6))
+        fig.patch.set_facecolor(_BG)
+        ax.set_facecolor(_BG)
+        ax.imshow(np.zeros((10, 10)), cmap=_SDR_CMAP, aspect="auto")
+        ax.set_xticks([])
+        ax.set_yticks([])
+        for spine in ax.spines.values():
+            spine.set_color(_BORDER)
+        fig.tight_layout(pad=0.5)
+
+        canvas = FigureCanvasTkAgg(fig, master=self.waterfall_container)
+        canvas.draw()
+        canvas.get_tk_widget().pack(fill="both", expand=True)
+
+        self.waterfall_fig = fig
+        self.waterfall_ax = ax
+        self.waterfall_canvas = canvas
+
+    def _update_waterfall(self, audio, sr):
+        try:
+            n_fft, hop = 512, 256
+            if len(audio) <= n_fft:
+                return
+            frames = np.array([audio[i:i + n_fft] for i in range(0, len(audio) - n_fft, hop)])
+            stft = np.abs(np.fft.rfft(frames, axis=1))
+            spec_db = 20 * np.log10(stft + 1e-9)
+            freqs = np.fft.rfftfreq(n_fft, 1 / sr)
+
+            # Clip to a realistic dynamic range near the peak — without this,
+            # the near-silent noise floor (down at the -180dB epsilon) stretches
+            # the auto color scale so much that ordinary background energy already
+            # falls in the colormap's orange/yellow range, making the tone look
+            # far wider than it actually is.
+            vmax = float(spec_db.max())
+            vmin = vmax - 50
+
+            self.waterfall_ax.clear()
+            self.waterfall_ax.imshow(
+                spec_db, origin="upper", aspect="auto", cmap=_SDR_CMAP,
+                extent=[freqs[0], freqs[-1], spec_db.shape[0], 0],
+                vmin=vmin, vmax=vmax,
+            )
+
+            # The signal is already bandpass-filtered to ~150Hz either side of the
+            # tone before it gets here, so most of the 0..sr/2 axis is empty air.
+            # Zoom to the active band instead of always showing the full range.
+            peak_freq = freqs[np.argmax(spec_db.max(axis=0))]
+            zoom_half_width = 400
+            low = max(freqs[0], peak_freq - zoom_half_width)
+            high = min(freqs[-1], peak_freq + zoom_half_width)
+            self.waterfall_ax.set_xlim(low, high)
+
+            self.waterfall_ax.set_xlabel("Frequency (Hz)", color=_MUTED2, fontsize=7)
+            self.waterfall_ax.set_yticks([])
+            self.waterfall_ax.tick_params(colors="#333333", labelsize=7)
+            for spine in self.waterfall_ax.spines.values():
+                spine.set_color(_BORDER)
+            self.waterfall_fig.patch.set_facecolor(_BG)
+            self.waterfall_ax.set_facecolor(_BG)
+            self.waterfall_fig.tight_layout(pad=0.5)
+            self.waterfall_canvas.draw_idle()
+        except Exception as exc:
+            print(f"Waterfall update error: {exc}")
+
+    def _build_text_boxes(self):
+        text_frame = ctk.CTkFrame(self.right_panel, fg_color=_BG)
+        text_frame.grid(row=2, column=0, sticky="nsew", padx=12, pady=(4, 12))
+        text_frame.columnconfigure(0, weight=1)
+        text_frame.columnconfigure(1, minsize=1)
+        text_frame.columnconfigure(2, weight=1)
+        text_frame.rowconfigure(0, weight=1)
+
+        raw_col = ctk.CTkFrame(text_frame, fg_color=_BG)
+        raw_col.grid(row=0, column=0, sticky="nsew", padx=(0, 8))
+        ctk.CTkLabel(raw_col, text=self._spaced("RAW DECODE"), font=ctk.CTkFont(size=9), text_color=_MUTED2).pack(anchor="w")
         self.morse_label = ctk.CTkLabel(
-            self.app, text="",
-            font=ctk.CTkFont(size=28, family="Courier New", weight="bold"),
-            text_color=_AMBER,
+            raw_col, text="", font=ctk.CTkFont(size=18, family="Courier New", weight="bold"), text_color=_ORANGE,
         )
-        self.morse_label.pack(pady=(10, 2))
-
-        # ── Decoded text (raw) ────────────────────────────────────────────────
-        ctk.CTkLabel(
-            self.app, text="Decoded Text (Raw)",
-            font=ctk.CTkFont(size=12, weight="bold"), text_color=_MUTED,
-        ).pack(pady=(4, 2))
-
+        self.morse_label.pack(anchor="w")
         self.text_box = ctk.CTkTextbox(
-            self.app, height=75,
-            fg_color=_SURFACE, text_color=_TEXT,
-            border_color=_BORDER, border_width=1,
-            corner_radius=8,
-            font=ctk.CTkFont(size=22, weight="bold"),
+            raw_col, fg_color=_BG, text_color=_GREEN, border_width=0,
+            font=ctk.CTkFont(family="Courier New", size=12),
         )
-        self.text_box.pack(padx=30, pady=(0, 8), fill="x")
+        self.text_box.pack(fill="both", expand=True, pady=(2, 0))
 
-        # ── AI corrected text (hidden by default) ────────────────────────────
-        self.ai_frame = ctk.CTkFrame(self.app, fg_color="transparent")
+        ctk.CTkFrame(text_frame, fg_color=_BORDER, width=1).grid(row=0, column=1, sticky="ns")
 
-        ctk.CTkLabel(
-            self.ai_frame, text="AI Predicted Text (Groq)",
-            font=ctk.CTkFont(size=12, weight="bold"), text_color=_MUTED,
-        ).pack(pady=(4, 2))
-
+        self.ai_frame = ctk.CTkFrame(text_frame, fg_color=_BG)
+        self.ai_frame.grid(row=0, column=2, sticky="nsew", padx=(8, 0))
+        ctk.CTkLabel(self.ai_frame, text=self._spaced("AI PREDICTED"), font=ctk.CTkFont(size=9), text_color=_MUTED2).pack(anchor="w")
         self.ai_text_box = ctk.CTkTextbox(
-            self.ai_frame, height=75,
-            fg_color=_SURFACE, text_color=_TEXT,
-            border_color=_BORDER, border_width=1,
-            corner_radius=8,
-            font=ctk.CTkFont(size=22, weight="bold"),
+            self.ai_frame, fg_color=_BG, text_color=_CYAN, border_width=0,
+            font=ctk.CTkFont(family="Courier New", size=12),
         )
-        self.ai_text_box.pack(padx=0, pady=(0, 20), fill="x")
+        self.ai_text_box.pack(fill="both", expand=True, pady=(2, 0))
+        self.ai_frame.grid_remove()
 
-        self.ai_frame.pack_forget()
+    # ── animations ────────────────────────────────────────────────────────────
+
+    def _animate_smeter(self):
+        lit = random.randint(4, 7) if self._smeter_active else 0
+        for i, bar in enumerate(self.smeter_bars):
+            bar.configure(fg_color=self._smeter_bright[i] if i < lit else self._smeter_dim[i])
+        self.signal_value_label.configure(text=f"S{lit}" if lit else "S--")
+        self.app.after(200, self._animate_smeter)
+
+    def _animate_status_pulse(self):
+        self._pulse_on = not self._pulse_on
+        base_color = self.status_label.cget("text_color")
+        self.status_dot.configure(text_color=base_color if self._pulse_on else _MUTED2)
+        self.app.after(600, self._animate_status_pulse)
+
+    # ── WPM ───────────────────────────────────────────────────────────────────
+
+    def _estimate_wpm(self, events):
+        symbol_times = [t for t, et, _ in events if et == "symbol"]
+        if len(symbol_times) < 2:
+            return None
+        deltas = [b - a for a, b in zip(symbol_times, symbol_times[1:]) if b - a > 0]
+        if not deltas:
+            return None
+        unit = min(deltas)
+        if unit <= 0:
+            return None
+        wpm = round(1.2 / unit)
+        return max(5, min(60, wpm))
 
     # ── file loading ──────────────────────────────────────────────────────────
 
@@ -164,7 +399,7 @@ class UIDisplay:
         if file_path:
             self.audio_file = file_path
             name = file_path.replace("\\", "/").split("/")[-1]
-            self.file_label.configure(text=f"●  {name}", text_color=_BUTTON)
+            self.file_label.configure(text=f"● {name}", text_color=_GREEN)
             self.play_btn.configure(state="normal")
 
     # ── playback helpers ──────────────────────────────────────────────────────
@@ -177,6 +412,8 @@ class UIDisplay:
         self._stop_playback = False
         self.play_btn.configure(state="disabled")
         self.stop_btn.configure(state="normal")
+        self._smeter_active = True
+        self._set_status("PLAYING", _GREEN)
 
         def _play():
             try:
@@ -198,6 +435,8 @@ class UIDisplay:
     def _on_playback_done(self):
         self.play_btn.configure(state="normal" if self.audio_file else "disabled")
         self.stop_btn.configure(state="disabled")
+        self._smeter_active = False
+        self._set_status("READY", _MUTED)
 
     def _cancel_animation(self):
         self._loading = False
@@ -263,7 +502,7 @@ class UIDisplay:
 
     def decode(self):
         if not self.audio_file:
-            self.file_label.configure(text="⚠  Please load a file first!", text_color=_BUTTON)
+            self.file_label.configure(text="⚠ Please load a file first!", text_color=_RED)
             return
 
         self._cancel_animation()
@@ -271,10 +510,12 @@ class UIDisplay:
         session = self._decode_session
 
         # Show spinner immediately while processing runs in background
-        self.decode_btn.configure(state="disabled", text="⏳  Processing...")
+        self.decode_btn.configure(state="disabled", text="PROCESSING...")
         self.text_box.delete("1.0", "end")
         self.ai_text_box.delete("1.0", "end")
         self._start_spinner(session)
+        self._smeter_active = True
+        self._set_status("PROCESSING...", _ORANGE)
 
         def _process():
             from src.audio_loader import AudioLoader
@@ -315,7 +556,7 @@ class UIDisplay:
             return
 
         self._stop_spinner()
-        self.decode_btn.configure(state="normal", text="▶  Decode & Play")
+        self.decode_btn.configure(state="normal", text="DECODE & PLAY")
 
         # Create figure on main thread (matplotlib requires this)
         from src.signal_visualizer import SignalVisualizer
@@ -323,7 +564,18 @@ class UIDisplay:
 
         # Embed graph
         ax = fig.axes[0]
-        self._playhead = ax.axvline(x=0, color=_BUTTON, linewidth=2, alpha=0.9, zorder=5)
+        ax.set_title('')
+        ax.lines[0].set_color(_GREEN_LINE)
+        ax.lines[0].set_linewidth(1)
+        fig.patch.set_facecolor(_BG)
+        ax.set_facecolor(_BG)
+        ax.xaxis.label.set_color(_MUTED2)
+        ax.yaxis.label.set_color(_MUTED2)
+        ax.tick_params(colors="#333333", labelsize=8)
+        ax.grid(True, color=(0, 1, 0.25, 0.07))
+        for spine in ax.spines.values():
+            spine.set_color(_BORDER)
+        self._playhead = ax.axvline(x=0, color="#ffffff", linewidth=1.2, alpha=0.9, zorder=5)
         for widget in self.graph_frame.winfo_children():
             widget.destroy()
         canvas = FigureCanvasTkAgg(fig, master=self.graph_frame)
@@ -331,10 +583,16 @@ class UIDisplay:
         canvas.get_tk_widget().pack(fill="both", expand=True)
         self._canvas_ref = canvas
 
+        self._update_waterfall(filtered, sr)
+        wpm = self._estimate_wpm(events)
+        self.wpm_value_label.configure(text=str(wpm) if wpm else "---")
+
         self._audio_duration = len(y) / sr
         self._stop_playback = False
         self.play_btn.configure(state="disabled")
         self.stop_btn.configure(state="normal")
+        self._smeter_active = True
+        self._set_status("PLAYING", _GREEN)
 
         # raw_data already loaded in background — _play() has no I/O, timestamp is tight
         def _play():
@@ -372,12 +630,12 @@ class UIDisplay:
 
     def toggle_ai(self):
         if self.ai_visible:
-            self.ai_frame.pack_forget()
-            self.ai_btn.configure(text="🤖 Show AI Correction")
+            self.ai_frame.grid_remove()
+            self.ai_btn.configure(text="◈ SHOW AI PREDICTION")
             self.ai_visible = False
         else:
-            self.ai_frame.pack(padx=30, pady=(0, 20), fill="x")
-            self.ai_btn.configure(text="🙈 Hide AI Correction")
+            self.ai_frame.grid()
+            self.ai_btn.configure(text="◈ HIDE AI PREDICTION")
             self.ai_visible = True
 
     def on_close(self):

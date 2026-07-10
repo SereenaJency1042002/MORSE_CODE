@@ -246,7 +246,7 @@ The output `filtered` looks almost identical to `y` because the Morse tone was a
 
 `filtfilt` runs the filter twice — forward then backward — so the two phase shifts cancel. This gives zero phase shift. A single forward-only pass would shift every tone boundary slightly in time, making dots appear longer than they are and corrupting the decoder's duration measurements.
 
-**What about noise inside the passband?**
+**What about noise inside the bandpass?**
 
 The bandpass filter cannot remove noise that sits inside 550–850 Hz. That noise is handled by later steps:
 
