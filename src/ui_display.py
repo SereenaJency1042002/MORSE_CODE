@@ -1,3 +1,4 @@
+import os
 import random
 import threading
 import time
@@ -10,6 +11,7 @@ import sounddevice as sd
 import soundfile as sf
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from matplotlib.colors import LinearSegmentedColormap
+from src.live_decoder import LiveDecoder
 
 ctk.set_appearance_mode("dark")
 
@@ -48,6 +50,20 @@ class UIDisplay:
         self._loading = False
         self._smeter_active = False
         self._pulse_on = False
+        self._live_decoder = None
+        self._live_mode = False
+        self._wf_buffer = np.zeros((80, 256), dtype=np.float32)
+        self._wf_needs_reset = False
+        self._live_wf_line   = None
+        self._live_wf_canvas = None
+        self._live_wf_ax     = None
+        self._live_wf_fig    = None
+        self._live_text_buffer = ""
+        self._live_ai_tick = 0
+        self._live_ai_interval = 10
+        self._recording_file = None      # soundfile write handle
+        self._recording_counter = self._get_next_recording_number()
+        self._recording_path = None      # path of current recording
 
         self.app = ctk.CTk()
         self.app.title("CW Decoder — Morse Code Decoder")
@@ -228,8 +244,402 @@ class UIDisplay:
             self.device_menu.configure(values=["FILE MODE ONLY"], state="disabled")
             self.device_menu.set("FILE MODE ONLY")
 
+    def _get_next_recording_number(self) -> int:
+        """
+        Scan recordings/ folder and return next available number.
+        Ensures record-1, record-2, record-3 across app restarts.
+        """
+        import re
+        folder = "recordings"
+        if not os.path.exists(folder):
+            return 1
+        existing = os.listdir(folder)
+        numbers = []
+        for f in existing:
+            match = re.match(r'record-(\d+)_', f)
+            if match:
+                numbers.append(int(match.group(1)))
+        return max(numbers) + 1 if numbers else 1
+
+    def _start_recording(self, freq_khz: str):
+        """
+        Opens a WAV file for writing.
+        Called automatically when live mode starts.
+        Filename: record-N_YYYY-MM-DD_HH-MM-SS_FREQkHz.wav
+        Saved in recordings/ folder next to main.py
+        """
+        try:
+            import os
+            from datetime import datetime
+
+            # Create recordings folder if it does not exist
+            os.makedirs("recordings", exist_ok=True)
+
+            # Build filename
+            timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+            clean_freq = freq_khz.strip().replace('.', '')
+            filename = (
+                f"record-{self._recording_counter}_"
+                f"{timestamp}_"
+                f"{clean_freq}kHz.wav"
+            )
+            path = os.path.join("recordings", filename)
+
+            # Open soundfile in write mode
+            self._recording_file = sf.SoundFile(
+                path,
+                mode='w',
+                samplerate=16000,
+                channels=1,
+                format='WAV',
+                subtype='PCM_16',
+            )
+            self._recording_path = path
+            self._recording_counter += 1
+            print(f"[RECORDING] Started: {path}")
+
+        except Exception as e:
+            print(f"[RECORDING] Failed to start: {e}")
+            self._recording_file = None
+
+    def _stop_recording(self):
+        """
+        Closes and saves the current WAV recording.
+        Called automatically when live mode stops.
+        """
+        if self._recording_file is not None:
+            try:
+                self._recording_file.close()
+                print(f"[RECORDING] Saved: {self._recording_path}")
+                self._set_status(
+                    f"SAVED: {os.path.basename(self._recording_path)}",
+                    _GREEN
+                )
+            except Exception as e:
+                print(f"[RECORDING] Failed to close: {e}")
+            finally:
+                self._recording_file = None
+                self._recording_path = None
+
+    def _write_recording_chunk(self, audio_chunk: np.ndarray):
+        """
+        Appends one audio chunk to the open recording file.
+        Called from _on_live_audio on main thread.
+        audio_chunk: 1D float32 numpy array (1 second of audio)
+        """
+        if self._recording_file is not None:
+            try:
+                self._recording_file.write(audio_chunk)
+            except Exception as e:
+                print(f"[RECORDING] Write error: {e}")
+
     def start_live(self):
-        self._set_status("LIVE MODE — connect VB-Cable", _ORANGE)
+        if self._live_mode:
+            return
+
+        # Get selected device name from dropdown
+        selected = self.device_menu.get()
+        if selected == "FILE MODE ONLY":
+            self._set_status("NO INPUT DEVICE FOUND", _RED)
+            return
+
+        # Find device index from name
+        device_index = self._get_device_index(selected)
+
+        # Clear text boxes
+        self.text_box.delete("1.0", "end")
+        self.ai_text_box.delete("1.0", "end")
+
+        # Update UI state
+        self._live_mode = True
+        self._wf_buffer = np.zeros((80, 256), dtype=np.float32)
+        self._live_text_buffer = ""
+        self._live_ai_tick = 0
+        self.live_explain_box.delete("1.0", "end")
+        self._smeter_active = True
+        self.start_live_btn.configure(state="disabled")
+        self.stop_btn.configure(state="normal")
+        self.decode_btn.configure(state="disabled")
+        freq_khz = self.freq_entry.get()
+        self._start_recording(freq_khz)
+        self._set_status("STARTING LIVE...", _ORANGE)
+
+        # Create and start LiveDecoder
+        self._live_decoder = LiveDecoder(
+            device=device_index,
+            sample_rate=16000,
+            on_text_callback=self._on_live_text,
+            on_status_callback=self._on_live_status,
+            on_audio_callback=self._on_live_audio,
+        )
+        self._live_decoder.start()
+        self._live_decoder.set_frequency(self.freq_entry.get())
+
+    def _get_device_index(self, selected_name):
+        """Find sounddevice index from display name."""
+        try:
+            import sounddevice as sd
+            devices = sd.query_devices()
+            # Strip the star prefix we added for VB-Cable
+            clean_name = selected_name.replace("★ ", "").strip()
+            for i, d in enumerate(devices):
+                if d["max_input_channels"] > 0 and clean_name in d["name"]:
+                    return i
+        except Exception:
+            pass
+        return None  # None = system default
+
+    def _on_live_text(self, new_text: str):
+        """
+        Called from LiveDecoder background thread when new text decoded.
+        Must use app.after() to update UI safely from background thread.
+        """
+        self.app.after(0, lambda t=new_text: self._append_live_text(t))
+
+    def _append_live_text(self, new_text: str):
+        """Runs on main thread — safe to update UI here."""
+        self.text_box.insert("end", new_text)
+        self.text_box.see("end")
+
+        # Accumulate for AI prediction
+        self._live_text_buffer += new_text
+        self._live_ai_tick += 1
+
+        # Call AI every _live_ai_interval ticks
+        if self._live_ai_tick >= self._live_ai_interval:
+            self._live_ai_tick = 0
+            if self.ai_visible and self._live_text_buffer.strip():
+                text_to_predict = self._live_text_buffer
+                self._live_text_buffer = ""
+                threading.Thread(
+                    target=self._run_live_ai,
+                    args=(text_to_predict,),
+                    daemon=True,
+                ).start()
+
+    def _run_live_ai(self, text: str):
+        """
+        Runs in background thread.
+        Step 1: correct signals strictly.
+        Step 2: explain corrected transmission.
+        Updates both AI boxes on main thread.
+        """
+        try:
+            from src.offline_ai import OfflineAI
+            predictor = OfflineAI()
+            corrected = predictor.correct_live_signals(text)
+            explanation = predictor.explain_live_transmission(corrected)
+            self.app.after(0, lambda c=corrected, e=explanation:
+                           self._set_live_ai_text(c, e))
+        except Exception as ex:
+            print(f"Live AI thread error: {ex}")
+
+    def _set_live_ai_text(self, corrected: str, explanation: str):
+        """Runs on main thread — updates both AI boxes."""
+        self.ai_text_box.insert("end", corrected + "\n")
+        self.ai_text_box.see("end")
+        if explanation:
+            self.live_explain_box.insert("end", explanation + "\n\n")
+            self.live_explain_box.see("end")
+
+    def _on_live_status(self, status: str):
+        """
+        Called from LiveDecoder background thread with status updates.
+        Must use app.after() to update UI safely.
+        """
+        if "CALIBRATING" in status:
+            self.app.after(0, lambda s=status: self._set_status(
+                f"● {s}", _ORANGE))
+        elif status == "LIVE":
+            self.app.after(0, lambda: self._set_status("● LIVE", _GREEN))
+        elif status == "STOPPED":
+            self.app.after(0, lambda: self._set_status("READY", _MUTED))
+
+    def _on_live_audio(self, audio: np.ndarray, sr: int):
+        """
+        Called from LiveDecoder background thread every second.
+        Schedules UI update on main thread via app.after().
+        """
+        self.app.after(0, lambda a=audio.copy(), s=sr:
+                       self._update_live_visuals(a, s))
+
+    def _update_live_visuals(self, audio: np.ndarray, sr: int):
+        """
+        Runs on main thread — updates waveform, waterfall, and recording.
+        """
+        self._update_live_waveform(audio, sr)
+        self._update_live_waterfall(audio, sr)
+        # Write latest chunk to recording file
+        # audio[-16000:] = last 1 second of the 3 second buffer
+        chunk = audio[-16000:] if len(audio) >= 16000 else audio
+        self._write_recording_chunk(chunk)
+
+    def _update_live_waveform(self, audio: np.ndarray, sr: int):
+        """
+        Update waveform display with live audio.
+        Creates figure once on first call, then updates data in place.
+        Never recreates figure — avoids tkinter thread crash.
+        """
+        try:
+            # Downsample for display
+            step = max(1, len(audio) // 2000)
+            display = audio[::step]
+            time_axis = np.linspace(0, len(audio) / sr, len(display))
+            peak = max(float(np.abs(display).max()), 0.01)
+
+            if self._live_wf_line is None:
+                # First call — create figure once
+                for widget in self.graph_frame.winfo_children():
+                    widget.destroy()
+
+                fig, ax = plt.subplots(figsize=(8, 2.5))
+                fig.patch.set_facecolor(_BG)
+                ax.set_facecolor(_BG)
+                line, = ax.plot(
+                    time_axis, display,
+                    color=_GREEN_LINE, linewidth=0.8
+                )
+                ax.set_xlim(0, len(audio) / sr)
+                ax.set_ylim(-peak * 1.2, peak * 1.2)
+                ax.set_xlabel("Time (s)", color=_MUTED2, fontsize=7)
+                ax.set_ylabel("Amplitude", color=_MUTED2, fontsize=7)
+                ax.tick_params(colors="#333333", labelsize=7)
+                ax.grid(True, color=(0, 1, 0.25, 0.07))
+                for spine in ax.spines.values():
+                    spine.set_color(_BORDER)
+                fig.tight_layout(pad=0.5)
+
+                canvas = FigureCanvasTkAgg(fig, master=self.graph_frame)
+                canvas.draw()
+                canvas.get_tk_widget().pack(fill="both", expand=True)
+
+                self._live_wf_fig    = fig
+                self._live_wf_ax     = ax
+                self._live_wf_line   = line
+                self._live_wf_canvas = canvas
+            else:
+                # Subsequent calls — just update data, no figure recreation
+                self._live_wf_line.set_data(time_axis, display)
+                self._live_wf_ax.set_xlim(0, len(audio) / sr)
+                self._live_wf_ax.set_ylim(-peak * 1.2, peak * 1.2)
+                self._live_wf_canvas.draw_idle()
+
+        except Exception as e:
+            print(f"Live waveform error: {e}")
+
+    def _update_live_waterfall(self, audio: np.ndarray, sr: int):
+        """
+        Scrolling waterfall zoomed to detected signal ±500Hz.
+        Shows frequency labels on X axis like WebSDR.
+        New rows scroll down from top.
+        """
+        try:
+            n_fft = 2048
+            if len(audio) < n_fft:
+                return
+
+            # Use last 1 second of buffer
+            chunk = audio[-sr:] if len(audio) >= sr else audio
+
+            # FFT
+            fft_mag  = np.abs(np.fft.rfft(chunk, n=n_fft))
+            fft_db   = 20 * np.log10(fft_mag + 1e-9)
+            freqs    = np.fft.rfftfreq(n_fft, 1 / sr)
+
+            # Find peak frequency
+            mask = (freqs >= 200) & (freqs <= 5000)
+            if not np.any(mask):
+                return
+            peak_idx  = np.argmax(fft_mag[mask])
+            peak_freq = float(freqs[mask][peak_idx])
+
+            # Zoom to ±500Hz around peak
+            low_freq  = max(0, peak_freq - 500)
+            high_freq = min(sr / 2, peak_freq + 500)
+            zoom_mask = (freqs >= low_freq) & (freqs <= high_freq)
+            if not np.any(zoom_mask):
+                return
+
+            zoom_freqs = freqs[zoom_mask]
+            zoom_db    = fft_db[zoom_mask]
+
+            # Normalize to fixed 256 bins for buffer
+            bins = np.interp(
+                np.linspace(0, len(zoom_db) - 1, 256),
+                np.arange(len(zoom_db)),
+                zoom_db
+            )
+
+            # Normalize row
+            row_max = bins.max()
+            row_min = row_max - 60
+            bins    = np.clip(bins, row_min, row_max)
+
+            # Scroll buffer — new row at top
+            self._wf_buffer      = np.roll(self._wf_buffer, 1, axis=0)
+            self._wf_buffer[0, :] = bins
+
+            # Redraw
+            self.waterfall_ax.clear()
+            self.waterfall_ax.imshow(
+                self._wf_buffer,
+                origin="upper",
+                aspect="auto",
+                cmap=_SDR_CMAP,
+                vmin=row_min,
+                vmax=row_max,
+                extent=[low_freq, high_freq, 80, 0],
+            )
+
+            # X axis — frequency labels
+            self.waterfall_ax.set_xlabel(
+                "Frequency (Hz)", color=_MUTED2, fontsize=7
+            )
+            n_ticks = 5
+            tick_freqs = np.linspace(low_freq, high_freq, n_ticks)
+            self.waterfall_ax.set_xticks(tick_freqs)
+            self.waterfall_ax.set_xticklabels(
+                [f"{int(f)}Hz" for f in tick_freqs],
+                color=_GREEN, fontsize=7
+            )
+
+            # Y axis — time labels
+            self.waterfall_ax.set_ylabel(
+                "Time (s)", color=_MUTED2, fontsize=7
+            )
+            self.waterfall_ax.set_yticks([0, 20, 40, 60, 80])
+            self.waterfall_ax.set_yticklabels(
+                ["0s", "20s", "40s", "60s", "80s"],
+                color=_MUTED2, fontsize=7
+            )
+
+            # Vertical line at peak frequency
+            self.waterfall_ax.axvline(
+                x=peak_freq,
+                color=_GREEN,
+                linewidth=1.0,
+                alpha=0.8,
+                linestyle='--'
+            )
+
+            # Peak frequency label
+            self.waterfall_ax.text(
+                peak_freq + 10, 5,
+                f"{peak_freq:.0f}Hz",
+                color=_GREEN, fontsize=7
+            )
+
+            for spine in self.waterfall_ax.spines.values():
+                spine.set_color(_BORDER)
+            self.waterfall_fig.patch.set_facecolor(_BG)
+            self.waterfall_ax.set_facecolor(_BG)
+            self.waterfall_ax.tick_params(
+                colors=_MUTED2, labelsize=7
+            )
+            self.waterfall_canvas.draw_idle()
+
+        except Exception as e:
+            print(f"Live waterfall error: {e}")
 
     # ── right panel ───────────────────────────────────────────────────────────
 
@@ -352,12 +762,36 @@ class UIDisplay:
 
         self.ai_frame = ctk.CTkFrame(text_frame, fg_color=_BG)
         self.ai_frame.grid(row=0, column=2, sticky="nsew", padx=(8, 0))
-        ctk.CTkLabel(self.ai_frame, text=self._spaced("AI PREDICTED"), font=ctk.CTkFont(size=9), text_color=_MUTED2).pack(anchor="w")
+        self.ai_frame.columnconfigure(0, weight=1)
+        self.ai_frame.rowconfigure(1, weight=1)
+        self.ai_frame.rowconfigure(4, weight=1)
+
+        # Top — AI corrected signals only
+        ctk.CTkLabel(
+            self.ai_frame, text=self._spaced("AI CORRECTED"),
+            font=ctk.CTkFont(size=9), text_color=_MUTED2
+        ).grid(row=0, column=0, sticky="nw")
         self.ai_text_box = ctk.CTkTextbox(
             self.ai_frame, fg_color=_BG, text_color=_CYAN, border_width=0,
             font=ctk.CTkFont(family="Courier New", size=12),
         )
-        self.ai_text_box.pack(fill="both", expand=True, pady=(2, 0))
+        self.ai_text_box.grid(row=1, column=0, sticky="nsew", pady=(2, 4))
+
+        # Divider
+        ctk.CTkFrame(
+            self.ai_frame, fg_color=_BORDER, height=1
+        ).grid(row=2, column=0, sticky="ew")
+
+        # Bottom — explanation
+        ctk.CTkLabel(
+            self.ai_frame, text=self._spaced("EXPLANATION"),
+            font=ctk.CTkFont(size=9), text_color=_MUTED2
+        ).grid(row=3, column=0, sticky="nw", pady=(4, 0))
+        self.live_explain_box = ctk.CTkTextbox(
+            self.ai_frame, fg_color=_BG, text_color=_GREEN, border_width=0,
+            font=ctk.CTkFont(family="Courier New", size=11),
+        )
+        self.live_explain_box.grid(row=4, column=0, sticky="nsew", pady=(2, 0))
         self.ai_frame.grid_remove()
 
     # ── animations ────────────────────────────────────────────────────────────
@@ -427,6 +861,24 @@ class UIDisplay:
         self._playback_thread.start()
 
     def stop_audio(self):
+        # Stop live decoder if running
+        if self._live_mode:
+            self._live_mode = False
+            self._smeter_active = False
+            self.start_live_btn.configure(state="normal")
+            self.decode_btn.configure(state="normal")
+            if self._live_decoder:
+                threading.Thread(
+                    target=self._live_decoder.stop, daemon=True
+                ).start()
+                self._live_decoder = None
+            self._stop_recording()
+            self._live_wf_line   = None
+            self._live_wf_canvas = None
+            self._live_wf_ax     = None
+            self._live_wf_fig    = None
+
+        # Existing stop logic — keep unchanged
         self._cancel_animation()
         sd.stop()
         self._stop_playback = True
@@ -532,10 +984,8 @@ class UIDisplay:
 
             raw_morse = ' '.join(d for _, et, d in corrected_events if et == 'symbol')
 
-            if self.groq_api_key:
-                final_text = AIPredictor(self.groq_api_key).correct(corrected_text, raw_morse)
-            else:
-                final_text = corrected_text
+            from src.offline_ai import OfflineAI
+            final_text = OfflineAI().correct(corrected_text, raw_morse)
 
             # Pre-read original audio here (background thread) so _play() has no I/O delay
             raw_data, raw_sr = sf.read(self.audio_file)
@@ -639,6 +1089,9 @@ class UIDisplay:
             self.ai_visible = True
 
     def on_close(self):
+        if self._live_decoder:
+            self._live_decoder.stop()
+        self._stop_recording()
         sd.stop()
         self.app.quit()
         self.app.destroy()

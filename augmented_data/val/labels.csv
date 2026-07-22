@@ -1,0 +1,45 @@
+filename,expected_text,source,noise_level,snr_db,original_file,split
+Vintage Equipment Discussion_clean.wav,HR RIG IS VINTAGE 1970S HEATHKIT HW101 RUNNING 100W PRODUCING WARM CHIRP RCVR IS FB AR,generated,clean,inf,Vintage Equipment Discussion.wav,val
+Vintage Equipment Discussion_low.wav,HR RIG IS VINTAGE 1970S HEATHKIT HW101 RUNNING 100W PRODUCING WARM CHIRP RCVR IS FB AR,generated,low,20,Vintage Equipment Discussion.wav,val
+Vintage Equipment Discussion_med.wav,HR RIG IS VINTAGE 1970S HEATHKIT HW101 RUNNING 100W PRODUCING WARM CHIRP RCVR IS FB AR,generated,med,10,Vintage Equipment Discussion.wav,val
+Vintage Equipment Discussion_high.wav,HR RIG IS VINTAGE 1970S HEATHKIT HW101 RUNNING 100W PRODUCING WARM CHIRP RCVR IS FB AR,generated,high,5,Vintage Equipment Discussion.wav,val
+Formal NTS Radiogram Routine Traffic_clean.wav,NR 42 R HXG K1XYZ 12 GUMMERSBACH 2200Z JUL 12 TO JOHN DOE GUMMERSBACH BT ALL IS WELL MEETING RESCHEDULED TO MONDAY AR,generated,clean,inf,Formal NTS Radiogram Routine Traffic.wav,val
+Formal NTS Radiogram Routine Traffic_low.wav,NR 42 R HXG K1XYZ 12 GUMMERSBACH 2200Z JUL 12 TO JOHN DOE GUMMERSBACH BT ALL IS WELL MEETING RESCHEDULED TO MONDAY AR,generated,low,20,Formal NTS Radiogram Routine Traffic.wav,val
+Formal NTS Radiogram Routine Traffic_med.wav,NR 42 R HXG K1XYZ 12 GUMMERSBACH 2200Z JUL 12 TO JOHN DOE GUMMERSBACH BT ALL IS WELL MEETING RESCHEDULED TO MONDAY AR,generated,med,10,Formal NTS Radiogram Routine Traffic.wav,val
+Formal NTS Radiogram Routine Traffic_high.wav,NR 42 R HXG K1XYZ 12 GUMMERSBACH 2200Z JUL 12 TO JOHN DOE GUMMERSBACH BT ALL IS WELL MEETING RESCHEDULED TO MONDAY AR,generated,high,5,Formal NTS Radiogram Routine Traffic.wav,val
+Transatlantic Confirmation from Canada_clean.wav,JA1YAA DE VE3XYZ R OK KEN UR SIGS 5NN HR OP DAVE QTH TORONTO VY FB COPY NO QRM PWR 100W ANT IS LONG WIRE AR VE3XYZ DE JA1YAA K,generated,clean,inf,Transatlantic Confirmation from Canada.wav,val
+Transatlantic Confirmation from Canada_low.wav,JA1YAA DE VE3XYZ R OK KEN UR SIGS 5NN HR OP DAVE QTH TORONTO VY FB COPY NO QRM PWR 100W ANT IS LONG WIRE AR VE3XYZ DE JA1YAA K,generated,low,20,Transatlantic Confirmation from Canada.wav,val
+Transatlantic Confirmation from Canada_med.wav,JA1YAA DE VE3XYZ R OK KEN UR SIGS 5NN HR OP DAVE QTH TORONTO VY FB COPY NO QRM PWR 100W ANT IS LONG WIRE AR VE3XYZ DE JA1YAA K,generated,med,10,Transatlantic Confirmation from Canada.wav,val
+Transatlantic Confirmation from Canada_high.wav,JA1YAA DE VE3XYZ R OK KEN UR SIGS 5NN HR OP DAVE QTH TORONTO VY FB COPY NO QRM PWR 100W ANT IS LONG WIRE AR VE3XYZ DE JA1YAA K,generated,high,5,Transatlantic Confirmation from Canada.wav,val
+Signal Report_clean.wav,RST 599 THX CU AR,generated,clean,inf,Signal Report.wav,val
+Signal Report_low.wav,RST 599 THX CU AR,generated,low,20,Signal Report.wav,val
+Signal Report_med.wav,RST 599 THX CU AR,generated,med,10,Signal Report.wav,val
+Signal Report_high.wav,RST 599 THX CU AR,generated,high,5,Signal Report.wav,val
+South American DX Invitation from Brazil_clean.wav,CQ CQ CQ DE PY2AA PY2AA K UR RST 5NN 5NN OP LUIS QTH SAO PAULO WX CLEAR TEMP 30C ANT BEAM HW CPY BK DE PY2AA K,generated,clean,inf,South American DX Invitation from Brazil.wav,val
+South American DX Invitation from Brazil_low.wav,CQ CQ CQ DE PY2AA PY2AA K UR RST 5NN 5NN OP LUIS QTH SAO PAULO WX CLEAR TEMP 30C ANT BEAM HW CPY BK DE PY2AA K,generated,low,20,South American DX Invitation from Brazil.wav,val
+South American DX Invitation from Brazil_med.wav,CQ CQ CQ DE PY2AA PY2AA K UR RST 5NN 5NN OP LUIS QTH SAO PAULO WX CLEAR TEMP 30C ANT BEAM HW CPY BK DE PY2AA K,generated,med,10,South American DX Invitation from Brazil.wav,val
+South American DX Invitation from Brazil_high.wav,CQ CQ CQ DE PY2AA PY2AA K UR RST 5NN 5NN OP LUIS QTH SAO PAULO WX CLEAR TEMP 30C ANT BEAM HW CPY BK DE PY2AA K,generated,high,5,South American DX Invitation from Brazil.wav,val
+Simple Beacon_clean.wav,CQ CQ CQ DE K1XYZ K,generated,clean,inf,Simple Beacon.wav,val
+Simple Beacon_low.wav,CQ CQ CQ DE K1XYZ K,generated,low,20,Simple Beacon.wav,val
+Simple Beacon_med.wav,CQ CQ CQ DE K1XYZ K,generated,med,10,Simple Beacon.wav,val
+Simple Beacon_high.wav,CQ CQ CQ DE K1XYZ K,generated,high,5,Simple Beacon.wav,val
+Morse_Prosign_-_Understood_clean.wav,SN,downloaded,clean,inf,Morse_Prosign_-_Understood.oga,val
+Morse_Prosign_-_Understood_low.wav,SN,downloaded,low,20,Morse_Prosign_-_Understood.oga,val
+Morse_Prosign_-_Understood_med.wav,SN,downloaded,med,10,Morse_Prosign_-_Understood.oga,val
+Morse_Prosign_-_Understood_high.wav,SN,downloaded,high,5,Morse_Prosign_-_Understood.oga,val
+Morse_Prosign_-_Wait_clean.wav,AS,downloaded,clean,inf,Morse_Prosign_-_Wait.oga,val
+Morse_Prosign_-_Wait_low.wav,AS,downloaded,low,20,Morse_Prosign_-_Wait.oga,val
+Morse_Prosign_-_Wait_med.wav,AS,downloaded,med,10,Morse_Prosign_-_Wait.oga,val
+Morse_Prosign_-_Wait_high.wav,AS,downloaded,high,5,Morse_Prosign_-_Wait.oga,val
+QRP (Low Power) Transmission from Latvia_clean.wav,K1XYZ DE YL3ZM YL3ZM R UR SIGS 5NN IN RIGA OP JALIS RIG HR FT817 PWR 5W ANT DIPOLE UP 10M WX CLOUDY BT HW CPY AR YL3ZM DE K1XYZ K,generated,clean,inf,QRP (Low Power) Transmission from Latvia.wav,val
+QRP (Low Power) Transmission from Latvia_low.wav,K1XYZ DE YL3ZM YL3ZM R UR SIGS 5NN IN RIGA OP JALIS RIG HR FT817 PWR 5W ANT DIPOLE UP 10M WX CLOUDY BT HW CPY AR YL3ZM DE K1XYZ K,generated,low,20,QRP (Low Power) Transmission from Latvia.wav,val
+QRP (Low Power) Transmission from Latvia_med.wav,K1XYZ DE YL3ZM YL3ZM R UR SIGS 5NN IN RIGA OP JALIS RIG HR FT817 PWR 5W ANT DIPOLE UP 10M WX CLOUDY BT HW CPY AR YL3ZM DE K1XYZ K,generated,med,10,QRP (Low Power) Transmission from Latvia.wav,val
+QRP (Low Power) Transmission from Latvia_high.wav,K1XYZ DE YL3ZM YL3ZM R UR SIGS 5NN IN RIGA OP JALIS RIG HR FT817 PWR 5W ANT DIPOLE UP 10M WX CLOUDY BT HW CPY AR YL3ZM DE K1XYZ K,generated,high,5,QRP (Low Power) Transmission from Latvia.wav,val
+Identity Verification_clean.wav,DE DL2ABC OP ALEX K,generated,clean,inf,Identity Verification.wav,val
+Identity Verification_low.wav,DE DL2ABC OP ALEX K,generated,low,20,Identity Verification.wav,val
+Identity Verification_med.wav,DE DL2ABC OP ALEX K,generated,med,10,Identity Verification.wav,val
+Identity Verification_high.wav,DE DL2ABC OP ALEX K,generated,high,5,Identity Verification.wav,val
+System Error Check_clean.wav,QRM PSE RPT K,generated,clean,inf,System Error Check.wav,val
+System Error Check_low.wav,QRM PSE RPT K,generated,low,20,System Error Check.wav,val
+System Error Check_med.wav,QRM PSE RPT K,generated,med,10,System Error Check.wav,val
+System Error Check_high.wav,QRM PSE RPT K,generated,high,5,System Error Check.wav,val

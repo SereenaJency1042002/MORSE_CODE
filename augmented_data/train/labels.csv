@@ -1,0 +1,101 @@
+filename,expected_text,source,noise_level,snr_db,original_file,split
+Weather Report_clean.wav,WX WARM TEMP 25C K,generated,clean,inf,Weather Report.wav,train
+Weather Report_low.wav,WX WARM TEMP 25C K,generated,low,20,Weather Report.wav,train
+Weather Report_med.wav,WX WARM TEMP 25C K,generated,med,10,Weather Report.wav,train
+Weather Report_high.wav,WX WARM TEMP 25C K,generated,high,5,Weather Report.wav,train
+Morse_Prosign_-_Invitation_to_Transmit_clean.wav,K,downloaded,clean,inf,Morse_Prosign_-_Invitation_to_Transmit.oga,train
+Morse_Prosign_-_Invitation_to_Transmit_low.wav,K,downloaded,low,20,Morse_Prosign_-_Invitation_to_Transmit.oga,train
+Morse_Prosign_-_Invitation_to_Transmit_med.wav,K,downloaded,med,10,Morse_Prosign_-_Invitation_to_Transmit.oga,train
+Morse_Prosign_-_Invitation_to_Transmit_high.wav,K,downloaded,high,5,Morse_Prosign_-_Invitation_to_Transmit.oga,train
+Standard Distress_clean.wav,SOS SOS CQD DE BLN,generated,clean,inf,Standard Distress.wav,train
+Standard Distress_low.wav,SOS SOS CQD DE BLN,generated,low,20,Standard Distress.wav,train
+Standard Distress_med.wav,SOS SOS CQD DE BLN,generated,med,10,Standard Distress.wav,train
+Standard Distress_high.wav,SOS SOS CQD DE BLN,generated,high,5,Standard Distress.wav,train
+Station & Rig Breakdown_clean.wav,R OK FR OM RIG HR IS FT817 PWR 5W ANT IS A HOMEBREW DIPOLE UP 10M HW CPY NW? AR K,generated,clean,inf,Station & Rig Breakdown.wav,train
+Station & Rig Breakdown_low.wav,R OK FR OM RIG HR IS FT817 PWR 5W ANT IS A HOMEBREW DIPOLE UP 10M HW CPY NW? AR K,generated,low,20,Station & Rig Breakdown.wav,train
+Station & Rig Breakdown_med.wav,R OK FR OM RIG HR IS FT817 PWR 5W ANT IS A HOMEBREW DIPOLE UP 10M HW CPY NW? AR K,generated,med,10,Station & Rig Breakdown.wav,train
+Station & Rig Breakdown_high.wav,R OK FR OM RIG HR IS FT817 PWR 5W ANT IS A HOMEBREW DIPOLE UP 10M HW CPY NW? AR K,generated,high,5,Station & Rig Breakdown.wav,train
+Weather and Environmental Update_clean.wav,WX HR VY BAD HVY RAIN ES WIND BARO 995 MB ANT SWAYING A LOT SO QRU NW QRV QRX,generated,clean,inf,Weather and Environmental Update.wav,train
+Weather and Environmental Update_low.wav,WX HR VY BAD HVY RAIN ES WIND BARO 995 MB ANT SWAYING A LOT SO QRU NW QRV QRX,generated,low,20,Weather and Environmental Update.wav,train
+Weather and Environmental Update_med.wav,WX HR VY BAD HVY RAIN ES WIND BARO 995 MB ANT SWAYING A LOT SO QRU NW QRV QRX,generated,med,10,Weather and Environmental Update.wav,train
+Weather and Environmental Update_high.wav,WX HR VY BAD HVY RAIN ES WIND BARO 995 MB ANT SWAYING A LOT SO QRU NW QRV QRX,generated,high,5,Weather and Environmental Update.wav,train
+Final Sign-Off and Goodbyes to London_clean.wav,G4ZAA DE K1XYZ R ALL FB AMY TNX INF UR RST 5NN OP BOB QTH BOSTON WX SUNNY 25C SO ES CUL DR OM TU 73 SK K1XYZ DE G4ZAA K,generated,clean,inf,Final Sign-Off and Goodbyes to London.wav,train
+Final Sign-Off and Goodbyes to London_low.wav,G4ZAA DE K1XYZ R ALL FB AMY TNX INF UR RST 5NN OP BOB QTH BOSTON WX SUNNY 25C SO ES CUL DR OM TU 73 SK K1XYZ DE G4ZAA K,generated,low,20,Final Sign-Off and Goodbyes to London.wav,train
+Final Sign-Off and Goodbyes to London_med.wav,G4ZAA DE K1XYZ R ALL FB AMY TNX INF UR RST 5NN OP BOB QTH BOSTON WX SUNNY 25C SO ES CUL DR OM TU 73 SK K1XYZ DE G4ZAA K,generated,med,10,Final Sign-Off and Goodbyes to London.wav,train
+Final Sign-Off and Goodbyes to London_high.wav,G4ZAA DE K1XYZ R ALL FB AMY TNX INF UR RST 5NN OP BOB QTH BOSTON WX SUNNY 25C SO ES CUL DR OM TU 73 SK K1XYZ DE G4ZAA K,generated,high,5,Final Sign-Off and Goodbyes to London.wav,train
+Dealing with Local QRM (Interference)_clean.wav,R FB COPY BUT QRM IS HEAVY PSE RPT UR NAME ES QTH SRI VY HI NOISE HR KN,generated,clean,inf,Dealing with Local QRM (Interference).wav,train
+Dealing with Local QRM (Interference)_low.wav,R FB COPY BUT QRM IS HEAVY PSE RPT UR NAME ES QTH SRI VY HI NOISE HR KN,generated,low,20,Dealing with Local QRM (Interference).wav,train
+Dealing with Local QRM (Interference)_med.wav,R FB COPY BUT QRM IS HEAVY PSE RPT UR NAME ES QTH SRI VY HI NOISE HR KN,generated,med,10,Dealing with Local QRM (Interference).wav,train
+Dealing with Local QRM (Interference)_high.wav,R FB COPY BUT QRM IS HEAVY PSE RPT UR NAME ES QTH SRI VY HI NOISE HR KN,generated,high,5,Dealing with Local QRM (Interference).wav,train
+Final Closing of the Atlantic Circuit_clean.wav,F5MZN DE PY2AA R PIERRE ALL FB TNX FB QSO DR OM CUL ES 73 QRV FER NW DX TU SK PY2AA DE F5MZN CL,generated,clean,inf,Final Closing of the Atlantic Circuit.wav,train
+Final Closing of the Atlantic Circuit_low.wav,F5MZN DE PY2AA R PIERRE ALL FB TNX FB QSO DR OM CUL ES 73 QRV FER NW DX TU SK PY2AA DE F5MZN CL,generated,low,20,Final Closing of the Atlantic Circuit.wav,train
+Final Closing of the Atlantic Circuit_med.wav,F5MZN DE PY2AA R PIERRE ALL FB TNX FB QSO DR OM CUL ES 73 QRV FER NW DX TU SK PY2AA DE F5MZN CL,generated,med,10,Final Closing of the Atlantic Circuit.wav,train
+Final Closing of the Atlantic Circuit_high.wav,F5MZN DE PY2AA R PIERRE ALL FB TNX FB QSO DR OM CUL ES 73 QRV FER NW DX TU SK PY2AA DE F5MZN CL,generated,high,5,Final Closing of the Atlantic Circuit.wav,train
+Southern Hemisphere Update from Australia_clean.wav,VE3XYZ DE VK2ZY R FB DAVE TNX REPT UR RST 559 559 OP MATT QTH SYDNEY RIG HOMEBREW ANT DOUBLET BT WX VY HOT HR HW CPY AR VK2ZY K,generated,clean,inf,Southern Hemisphere Update from Australia.wav,train
+Southern Hemisphere Update from Australia_low.wav,VE3XYZ DE VK2ZY R FB DAVE TNX REPT UR RST 559 559 OP MATT QTH SYDNEY RIG HOMEBREW ANT DOUBLET BT WX VY HOT HR HW CPY AR VK2ZY K,generated,low,20,Southern Hemisphere Update from Australia.wav,train
+Southern Hemisphere Update from Australia_med.wav,VE3XYZ DE VK2ZY R FB DAVE TNX REPT UR RST 559 559 OP MATT QTH SYDNEY RIG HOMEBREW ANT DOUBLET BT WX VY HOT HR HW CPY AR VK2ZY K,generated,med,10,Southern Hemisphere Update from Australia.wav,train
+Southern Hemisphere Update from Australia_high.wav,VE3XYZ DE VK2ZY R FB DAVE TNX REPT UR RST 559 559 OP MATT QTH SYDNEY RIG HOMEBREW ANT DOUBLET BT WX VY HOT HR HW CPY AR VK2ZY K,generated,high,5,Southern Hemisphere Update from Australia.wav,train
+Standard Conversational Exchange _clean.wav,CQ CQ CQ DE DL2ABC DL2ABC K UR RST 579 579 HR FB WX TEMP 22C OP ALEX QTH COLOGNE HW CPY? K,generated,clean,inf,Standard Conversational Exchange .wav,train
+Standard Conversational Exchange _low.wav,CQ CQ CQ DE DL2ABC DL2ABC K UR RST 579 579 HR FB WX TEMP 22C OP ALEX QTH COLOGNE HW CPY? K,generated,low,20,Standard Conversational Exchange .wav,train
+Standard Conversational Exchange _med.wav,CQ CQ CQ DE DL2ABC DL2ABC K UR RST 579 579 HR FB WX TEMP 22C OP ALEX QTH COLOGNE HW CPY? K,generated,med,10,Standard Conversational Exchange .wav,train
+Standard Conversational Exchange _high.wav,CQ CQ CQ DE DL2ABC DL2ABC K UR RST 579 579 HR FB WX TEMP 22C OP ALEX QTH COLOGNE HW CPY? K,generated,high,5,Standard Conversational Exchange .wav,train
+DX Station Working a Pileup_clean.wav,QRZ DX DE ZS6XYZ UP 2 U5 REPEAT UR CALL ONLY STN ENDING IN MIAMI KN,generated,clean,inf,DX Station Working a Pileup.wav,train
+DX Station Working a Pileup_low.wav,QRZ DX DE ZS6XYZ UP 2 U5 REPEAT UR CALL ONLY STN ENDING IN MIAMI KN,generated,low,20,DX Station Working a Pileup.wav,train
+DX Station Working a Pileup_med.wav,QRZ DX DE ZS6XYZ UP 2 U5 REPEAT UR CALL ONLY STN ENDING IN MIAMI KN,generated,med,10,DX Station Working a Pileup.wav,train
+DX Station Working a Pileup_high.wav,QRZ DX DE ZS6XYZ UP 2 U5 REPEAT UR CALL ONLY STN ENDING IN MIAMI KN,generated,high,5,DX Station Working a Pileup.wav,train
+Morse_Prosign_-_End_of_Work_clean.wav,SK,downloaded,clean,inf,Morse_Prosign_-_End_of_Work.oga,train
+Morse_Prosign_-_End_of_Work_low.wav,SK,downloaded,low,20,Morse_Prosign_-_End_of_Work.oga,train
+Morse_Prosign_-_End_of_Work_med.wav,SK,downloaded,med,10,Morse_Prosign_-_End_of_Work.oga,train
+Morse_Prosign_-_End_of_Work_high.wav,SK,downloaded,high,5,Morse_Prosign_-_End_of_Work.oga,train
+Morse_Prosign_-_Error_clean.wav,HH,downloaded,clean,inf,Morse_Prosign_-_Error.oga,train
+Morse_Prosign_-_Error_low.wav,HH,downloaded,low,20,Morse_Prosign_-_Error.oga,train
+Morse_Prosign_-_Error_med.wav,HH,downloaded,med,10,Morse_Prosign_-_Error.oga,train
+Morse_Prosign_-_Error_high.wav,HH,downloaded,high,5,Morse_Prosign_-_Error.oga,train
+QSL and Farewell_clean.wav,TNX FB QSO DR ALEX 73 ES CUL DR OM TU BI BI SK DL2ABC DE K1XYZ CL,generated,clean,inf,QSL and Farewell.wav,train
+QSL and Farewell_low.wav,TNX FB QSO DR ALEX 73 ES CUL DR OM TU BI BI SK DL2ABC DE K1XYZ CL,generated,low,20,QSL and Farewell.wav,train
+QSL and Farewell_med.wav,TNX FB QSO DR ALEX 73 ES CUL DR OM TU BI BI SK DL2ABC DE K1XYZ CL,generated,med,10,QSL and Farewell.wav,train
+QSL and Farewell_high.wav,TNX FB QSO DR ALEX 73 ES CUL DR OM TU BI BI SK DL2ABC DE K1XYZ CL,generated,high,5,QSL and Farewell.wav,train
+Technical Status_clean.wav,PWR 50W ANT DIPOLE,generated,clean,inf,Technical Status.wav,train
+Technical Status_low.wav,PWR 50W ANT DIPOLE,generated,low,20,Technical Status.wav,train
+Technical Status_med.wav,PWR 50W ANT DIPOLE,generated,med,10,Technical Status.wav,train
+Technical Status_high.wav,PWR 50W ANT DIPOLE,generated,high,5,Technical Status.wav,train
+Japanese DX Callout in Rainy Weather_clean.wav,CQ CQ CQ DE JA1YAA JA1YAA K UR RST 5NN IN TOKYO OP KEN RIG TS590 PWR 100W ANT VERTICAL WX RAIN HW CPY BK DE JA1YAA K,generated,clean,inf,Japanese DX Callout in Rainy Weather.wav,train
+Japanese DX Callout in Rainy Weather_low.wav,CQ CQ CQ DE JA1YAA JA1YAA K UR RST 5NN IN TOKYO OP KEN RIG TS590 PWR 100W ANT VERTICAL WX RAIN HW CPY BK DE JA1YAA K,generated,low,20,Japanese DX Callout in Rainy Weather.wav,train
+Japanese DX Callout in Rainy Weather_med.wav,CQ CQ CQ DE JA1YAA JA1YAA K UR RST 5NN IN TOKYO OP KEN RIG TS590 PWR 100W ANT VERTICAL WX RAIN HW CPY BK DE JA1YAA K,generated,med,10,Japanese DX Callout in Rainy Weather.wav,train
+Japanese DX Callout in Rainy Weather_high.wav,CQ CQ CQ DE JA1YAA JA1YAA K UR RST 5NN IN TOKYO OP KEN RIG TS590 PWR 100W ANT VERTICAL WX RAIN HW CPY BK DE JA1YAA K,generated,high,5,Japanese DX Callout in Rainy Weather.wav,train
+German Station Opening a Contact with USA_clean.wav,CQ CQ CQ DE DL2ABC DL2ABC K UR RST 5NN 5NN HR FB WX TEMP 22C OP ALEX QTH COLOGNE HW CPY NW BT TNX FER CALL AR DL2ABC DE K1XYZ K,generated,clean,inf,German Station Opening a Contact with USA.wav,train
+German Station Opening a Contact with USA_low.wav,CQ CQ CQ DE DL2ABC DL2ABC K UR RST 5NN 5NN HR FB WX TEMP 22C OP ALEX QTH COLOGNE HW CPY NW BT TNX FER CALL AR DL2ABC DE K1XYZ K,generated,low,20,German Station Opening a Contact with USA.wav,train
+German Station Opening a Contact with USA_med.wav,CQ CQ CQ DE DL2ABC DL2ABC K UR RST 5NN 5NN HR FB WX TEMP 22C OP ALEX QTH COLOGNE HW CPY NW BT TNX FER CALL AR DL2ABC DE K1XYZ K,generated,med,10,German Station Opening a Contact with USA.wav,train
+German Station Opening a Contact with USA_high.wav,CQ CQ CQ DE DL2ABC DL2ABC K UR RST 5NN 5NN HR FB WX TEMP 22C OP ALEX QTH COLOGNE HW CPY NW BT TNX FER CALL AR DL2ABC DE K1XYZ K,generated,high,5,German Station Opening a Contact with USA.wav,train
+EmergencyUrgent Maritime Situation_clean.wav,PAN PAN PAN DE WLO WLO ENGINE FAILURE DRIFTING POSITION 54N 012E REQUEST TUG ASSISTANCE AR,generated,clean,inf,EmergencyUrgent Maritime Situation.wav,train
+EmergencyUrgent Maritime Situation_low.wav,PAN PAN PAN DE WLO WLO ENGINE FAILURE DRIFTING POSITION 54N 012E REQUEST TUG ASSISTANCE AR,generated,low,20,EmergencyUrgent Maritime Situation.wav,train
+EmergencyUrgent Maritime Situation_med.wav,PAN PAN PAN DE WLO WLO ENGINE FAILURE DRIFTING POSITION 54N 012E REQUEST TUG ASSISTANCE AR,generated,med,10,EmergencyUrgent Maritime Situation.wav,train
+EmergencyUrgent Maritime Situation_high.wav,PAN PAN PAN DE WLO WLO ENGINE FAILURE DRIFTING POSITION 54N 012E REQUEST TUG ASSISTANCE AR,generated,high,5,EmergencyUrgent Maritime Situation.wav,train
+Station Check_clean.wav,QRZ K1XYZ K,generated,clean,inf,Station Check.wav,train
+Station Check_low.wav,QRZ K1XYZ K,generated,low,20,Station Check.wav,train
+Station Check_med.wav,QRZ K1XYZ K,generated,med,10,Station Check.wav,train
+Station Check_high.wav,QRZ K1XYZ K,generated,high,5,Station Check.wav,train
+European Response from France_clean.wav,PY2AA DE F5MZN R LUIS UR SIGS 5NN HR OP PIERRE QTH PARIS RIG FT991 PWR 100W ANT WINDOM FB COPY TNX FER NEW DX AR F5MZN DE PY2AA K,generated,clean,inf,European Response from France.wav,train
+European Response from France_low.wav,PY2AA DE F5MZN R LUIS UR SIGS 5NN HR OP PIERRE QTH PARIS RIG FT991 PWR 100W ANT WINDOM FB COPY TNX FER NEW DX AR F5MZN DE PY2AA K,generated,low,20,European Response from France.wav,train
+European Response from France_med.wav,PY2AA DE F5MZN R LUIS UR SIGS 5NN HR OP PIERRE QTH PARIS RIG FT991 PWR 100W ANT WINDOM FB COPY TNX FER NEW DX AR F5MZN DE PY2AA K,generated,med,10,European Response from France.wav,train
+European Response from France_high.wav,PY2AA DE F5MZN R LUIS UR SIGS 5NN HR OP PIERRE QTH PARIS RIG FT991 PWR 100W ANT WINDOM FB COPY TNX FER NEW DX AR F5MZN DE PY2AA K,generated,high,5,European Response from France.wav,train
+Conversation End_clean.wav,TU 73 CUL SK,generated,clean,inf,Conversation End.wav,train
+Conversation End_low.wav,TU 73 CUL SK,generated,low,20,Conversation End.wav,train
+Conversation End_med.wav,TU 73 CUL SK,generated,med,10,Conversation End.wav,train
+Conversation End_high.wav,TU 73 CUL SK,generated,high,5,Conversation End.wav,train
+Contest Exchange Protocol_clean.wav,CQ TEST DE K1XYZ K1XYZ TEST 599 001 MA BK EE,generated,clean,inf,Contest Exchange Protocol.wav,train
+Contest Exchange Protocol_low.wav,CQ TEST DE K1XYZ K1XYZ TEST 599 001 MA BK EE,generated,low,20,Contest Exchange Protocol.wav,train
+Contest Exchange Protocol_med.wav,CQ TEST DE K1XYZ K1XYZ TEST 599 001 MA BK EE,generated,med,10,Contest Exchange Protocol.wav,train
+Contest Exchange Protocol_high.wav,CQ TEST DE K1XYZ K1XYZ TEST 599 001 MA BK EE,generated,high,5,Contest Exchange Protocol.wav,train
+Morse_Prosign_-_Starting_Signal_clean.wav,KA,downloaded,clean,inf,Morse_Prosign_-_Starting_Signal.oga,train
+Morse_Prosign_-_Starting_Signal_low.wav,KA,downloaded,low,20,Morse_Prosign_-_Starting_Signal.oga,train
+Morse_Prosign_-_Starting_Signal_med.wav,KA,downloaded,med,10,Morse_Prosign_-_Starting_Signal.oga,train
+Morse_Prosign_-_Starting_Signal_high.wav,KA,downloaded,high,5,Morse_Prosign_-_Starting_Signal.oga,train
+High-Performance Station Update from the UK_clean.wav,K1XYZ DE G4ZAA OK DR OM TNX FB QSO UR RST 579 579 OP AMY QTH LONDON RIG IS K3 RUNNING 100W ANT YAGI SO VY FB COPY HR AR G4ZAA DE K1XYZ K,generated,clean,inf,High-Performance Station Update from the UK.wav,train
+High-Performance Station Update from the UK_low.wav,K1XYZ DE G4ZAA OK DR OM TNX FB QSO UR RST 579 579 OP AMY QTH LONDON RIG IS K3 RUNNING 100W ANT YAGI SO VY FB COPY HR AR G4ZAA DE K1XYZ K,generated,low,20,High-Performance Station Update from the UK.wav,train
+High-Performance Station Update from the UK_med.wav,K1XYZ DE G4ZAA OK DR OM TNX FB QSO UR RST 579 579 OP AMY QTH LONDON RIG IS K3 RUNNING 100W ANT YAGI SO VY FB COPY HR AR G4ZAA DE K1XYZ K,generated,med,10,High-Performance Station Update from the UK.wav,train
+High-Performance Station Update from the UK_high.wav,K1XYZ DE G4ZAA OK DR OM TNX FB QSO UR RST 579 579 OP AMY QTH LONDON RIG IS K3 RUNNING 100W ANT YAGI SO VY FB COPY HR AR G4ZAA DE K1XYZ K,generated,high,5,High-Performance Station Update from the UK.wav,train
+Location Data_clean.wav,QTH BERLIN GRM AR,generated,clean,inf,Location Data.wav,train
+Location Data_low.wav,QTH BERLIN GRM AR,generated,low,20,Location Data.wav,train
+Location Data_med.wav,QTH BERLIN GRM AR,generated,med,10,Location Data.wav,train
+Location Data_high.wav,QTH BERLIN GRM AR,generated,high,5,Location Data.wav,train

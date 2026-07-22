@@ -4,3 +4,4 @@ audio_files/
 dist/
 build/
 .env
+offline_ai_model/model_state.pt
