@@ -1,0 +1,280 @@
+
+[t=00:10] 🔴 HIGH QRM — 50%+ confusion — multiple stations or heavy interference
+          SNR: 17.9dB
+          freq: 604Hz
+          dot: 35ms
+          dash: 76ms
+          ratio: 2.17x
+          confusion: 100.0%
+
+[t=00:11] 🔴 HIGH QRM — 50%+ confusion — multiple stations or heavy interference
+          SNR: 17.7dB
+          freq: 663Hz
+          dot: 31ms
+          dash: 98ms
+          ratio: 3.13x
+          confusion: 100.0%
+
+[t=00:11] ⚠️  FREQUENCY DRIFT — 604Hz → 663Hz
+          SNR: 17.7dB
+          freq: 663Hz
+          dot: 31ms
+          dash: 98ms
+          ratio: 3.13x
+          confusion: 100.0%
+
+[t=00:12] 🔴 HIGH QRM — 50%+ confusion — multiple stations or heavy interference
+          SNR: 17.8dB
+          freq: 643Hz
+          dot: 35ms
+          dash: 110ms
+          ratio: 3.14x
+          confusion: 100.0%
+
+[t=00:13] 🔴 HIGH QRM — 50%+ confusion — multiple stations or heavy interference
+          SNR: 17.9dB
+          freq: 643Hz
+          dot: 28ms
+          dash: 98ms
+          ratio: 3.55x
+          confusion: 100.0%
+
+[t=00:14] 🔴 HIGH QRM — 50%+ confusion — multiple stations or heavy interference
+          SNR: 17.9dB
+          freq: 626Hz
+          dot: 25ms
+          dash: 70ms
+          ratio: 2.82x
+          confusion: 100.0%
+
+[t=00:15] 🔴 HIGH QRM — 50%+ confusion — multiple stations or heavy interference
+          SNR: 18.0dB
+          freq: 688Hz
+          dot: 25ms
+          dash: 61ms
+          ratio: 2.44x
+          confusion: 100.0%
+
+[t=00:15] ⚠️  FREQUENCY DRIFT — 626Hz → 688Hz
+          SNR: 18.0dB
+          freq: 688Hz
+          dot: 25ms
+          dash: 61ms
+          ratio: 2.44x
+          confusion: 100.0%
+
+[t=00:16] 🔴 HIGH QRM — 50%+ confusion — multiple stations or heavy interference
+          SNR: 18.2dB
+          freq: 621Hz
+          dot: 20ms
+          dash: 75ms
+          ratio: 3.75x
+          confusion: 100.0%
+
+[t=00:16] ⚠️  FREQUENCY DRIFT — 688Hz → 621Hz
+          SNR: 18.2dB
+          freq: 621Hz
+          dot: 20ms
+          dash: 75ms
+          ratio: 3.75x
+          confusion: 100.0%
+
+[t=00:17] 🔴 HIGH QRM — 50%+ confusion — multiple stations or heavy interference
+          SNR: 18.3dB
+          freq: 610Hz
+          dot: 25ms
+          dash: 60ms
+          ratio: 2.40x
+          confusion: 100.0%
+
+[t=00:18] 🔴 HIGH QRM — 50%+ confusion — multiple stations or heavy interference
+          SNR: 18.0dB
+          freq: 595Hz
+          dot: 25ms
+          dash: 64ms
+          ratio: 2.54x
+          confusion: 100.0%
+
+[t=00:19] 🔴 HIGH QRM — 50%+ confusion — multiple stations or heavy interference
+          SNR: 17.8dB
+          freq: 610Hz
+          dot: 25ms
+          dash: 65ms
+          ratio: 2.60x
+          confusion: 100.0%
+
+[t=00:20] 🔴 HIGH QRM — 50%+ confusion — multiple stations or heavy interference
+          SNR: 17.5dB
+          freq: 658Hz
+          dot: 25ms
+          dash: 80ms
+          ratio: 3.20x
+          confusion: 100.0%
+
+[t=00:21] 🔴 HIGH QRM — 50%+ confusion — multiple stations or heavy interference
+          SNR: 17.8dB
+          freq: 624Hz
+          dot: 20ms
+          dash: 60ms
+          ratio: 3.00x
+          confusion: 100.0%
+
+[t=00:22] 🔴 HIGH QRM — 50%+ confusion — multiple stations or heavy interference
+          SNR: 17.8dB
+          freq: 619Hz
+          dot: 21ms
+          dash: 84ms
+          ratio: 3.88x
+          confusion: 100.0%
+
+[t=00:24] 🔴 HIGH QRM — 50%+ confusion — multiple stations or heavy interference
+          SNR: 17.7dB
+          freq: 642Hz
+          dot: 20ms
+          dash: 86ms
+          ratio: 4.30x
+          confusion: 100.0%
+
+[t=00:25] 🔴 HIGH QRM — 50%+ confusion — multiple stations or heavy interference
+          SNR: 17.5dB
+          freq: 630Hz
+          dot: 30ms
+          dash: 74ms
+          ratio: 2.45x
+          confusion: 100.0%
+
+[t=00:26] 🔴 HIGH QRM — 50%+ confusion — multiple stations or heavy interference
+          SNR: 17.4dB
+          freq: 758Hz
+          dot: 24ms
+          dash: 66ms
+          ratio: 2.75x
+          confusion: 100.0%
+
+[t=00:26] ⚠️  FREQUENCY DRIFT — 630Hz → 758Hz
+          SNR: 17.4dB
+          freq: 758Hz
+          dot: 24ms
+          dash: 66ms
+          ratio: 2.75x
+          confusion: 100.0%
+
+[t=00:27] 🔴 HIGH QRM — 50%+ confusion — multiple stations or heavy interference
+          SNR: 17.8dB
+          freq: 611Hz
+          dot: 25ms
+          dash: 72ms
+          ratio: 2.88x
+          confusion: 100.0%
+
+[t=00:27] ⚠️  FREQUENCY DRIFT — 758Hz → 611Hz
+          SNR: 17.8dB
+          freq: 611Hz
+          dot: 25ms
+          dash: 72ms
+          ratio: 2.88x
+          confusion: 100.0%
+
+[t=00:28] 🔴 HIGH QRM — 50%+ confusion — multiple stations or heavy interference
+          SNR: 17.9dB
+          freq: 709Hz
+          dot: 28ms
+          dash: 66ms
+          ratio: 2.33x
+          confusion: 100.0%
+
+[t=00:28] ⚠️  FREQUENCY DRIFT — 611Hz → 709Hz
+          SNR: 17.9dB
+          freq: 709Hz
+          dot: 28ms
+          dash: 66ms
+          ratio: 2.33x
+          confusion: 100.0%
+
+[t=00:29] 🔴 HIGH QRM — 50%+ confusion — multiple stations or heavy interference
+          SNR: 17.8dB
+          freq: 571Hz
+          dot: 25ms
+          dash: 95ms
+          ratio: 3.80x
+          confusion: 100.0%
+
+[t=00:29] ⚠️  FREQUENCY DRIFT — 709Hz → 571Hz
+          SNR: 17.8dB
+          freq: 571Hz
+          dot: 25ms
+          dash: 95ms
+          ratio: 3.80x
+          confusion: 100.0%
+
+[t=00:30] 🔴 HIGH QRM — 50%+ confusion — multiple stations or heavy interference
+          SNR: 17.8dB
+          freq: 639Hz
+          dot: 25ms
+          dash: 82ms
+          ratio: 3.30x
+          confusion: 100.0%
+
+[t=00:30] ⚠️  FREQUENCY DRIFT — 571Hz → 639Hz
+          SNR: 17.8dB
+          freq: 639Hz
+          dot: 25ms
+          dash: 82ms
+          ratio: 3.30x
+          confusion: 100.0%
+
+[t=00:31] 🔴 HIGH QRM — 50%+ confusion — multiple stations or heavy interference
+          SNR: 18.0dB
+          freq: 650Hz
+          dot: 28ms
+          dash: 82ms
+          ratio: 3.00x
+          confusion: 100.0%
+
+[t=00:32] 🔴 HIGH QRM — 50%+ confusion — multiple stations or heavy interference
+          SNR: 18.0dB
+          freq: 599Hz
+          dot: 25ms
+          dash: 80ms
+          ratio: 3.20x
+          confusion: 100.0%
+
+[t=00:32] ⚠️  FREQUENCY DRIFT — 650Hz → 599Hz
+          SNR: 18.0dB
+          freq: 599Hz
+          dot: 25ms
+          dash: 80ms
+          ratio: 3.20x
+          confusion: 100.0%
+
+[t=00:33] 🔴 HIGH QRM — 50%+ confusion — multiple stations or heavy interference
+          SNR: 17.8dB
+          freq: 658Hz
+          dot: 28ms
+          dash: 75ms
+          ratio: 2.73x
+          confusion: 100.0%
+
+[t=00:33] ⚠️  FREQUENCY DRIFT — 599Hz → 658Hz
+          SNR: 17.8dB
+          freq: 658Hz
+          dot: 28ms
+          dash: 75ms
+          ratio: 2.73x
+          confusion: 100.0%
+
+[t=00:34] 🔴 HIGH QRM — 50%+ confusion — multiple stations or heavy interference
+          SNR: 17.8dB
+          freq: 579Hz
+          dot: 35ms
+          dash: 83ms
+          ratio: 2.37x
+          confusion: 100.0%
+
+[t=00:34] ⚠️  FREQUENCY DRIFT — 658Hz → 579Hz
+          SNR: 17.8dB
+          freq: 579Hz
+          dot: 35ms
+          dash: 83ms
+          ratio: 2.37x
+          confusion: 100.0%

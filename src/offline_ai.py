@@ -3,10 +3,14 @@ os.environ['HF_HUB_DISABLE_SYMLINKS_WARNING'] = '1'
 os.environ['TRANSFORMERS_OFFLINE'] = '1'
 
 import re
+import sys
 import torch
 from transformers import AutoTokenizer
 
-MODEL_DIR = "offline_ai_model"
+if getattr(sys, 'frozen', False):
+    MODEL_DIR = os.path.join(sys._MEIPASS, "offline_ai_model")
+else:
+    MODEL_DIR = "offline_ai_model"
 _model    = None
 _tokenizer = None
 _prefix   = "fix morse errors: "
@@ -71,6 +75,18 @@ def _t5_correct(text: str) -> str:
     """Run T5 correction on text."""
     if not _load_model():
         return _rule_correct(text)
+
+    # Quality check — skip T5 if too noisy
+    tokens = text.split()
+    if not tokens:
+        return text
+    question_rate = text.count('?') / len(tokens)
+    if question_rate > 0.25:
+        return _rule_correct(text)
+
+    # Truncate if too long
+    if len(tokens) > 25:
+        text = ' '.join(tokens[:25])
     try:
         inp = _tokenizer(
             _prefix + text,

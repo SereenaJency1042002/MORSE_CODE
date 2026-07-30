@@ -1,0 +1,1768 @@
+
+[t=00:11] ⚠️  HIGH CONFUSION — 25%+ unrecognized — weak signal or timing errors
+          SNR: 27.6dB
+          freq: 774Hz
+          dot: 35ms
+          dash: 90ms
+          ratio: 2.57x
+          confusion: 28.6%
+
+[t=00:12] ⚠️  HIGH CONFUSION — 25%+ unrecognized — weak signal or timing errors
+          SNR: 28.8dB
+          freq: 773Hz
+          dot: 30ms
+          dash: 85ms
+          ratio: 2.83x
+          confusion: 33.3%
+
+[t=00:13] ⚠️  TIMING UNSTABLE — ratio=1.24x outside normal range 2.0-4.0x
+          SNR: 29.6dB
+          freq: 773Hz
+          dot: 69ms
+          dash: 85ms
+          ratio: 1.24x
+          confusion: 16.7%
+
+[t=00:14] ⚠️  TIMING UNSTABLE — ratio=4.75x outside normal range 2.0-4.0x
+          SNR: 27.6dB
+          freq: 773Hz
+          dot: 18ms
+          dash: 85ms
+          ratio: 4.75x
+          confusion: 16.7%
+
+[t=00:16] ⚠️  HIGH CONFUSION — 25%+ unrecognized — weak signal or timing errors
+          SNR: 20.3dB
+          freq: 647Hz
+          dot: 15ms
+          dash: 56ms
+          ratio: 3.77x
+          confusion: 50.0%
+
+[t=00:16] ⚠️  FREQUENCY DRIFT — 774Hz → 647Hz
+          SNR: 20.3dB
+          freq: 647Hz
+          dot: 15ms
+          dash: 56ms
+          ratio: 3.77x
+          confusion: 50.0%
+
+[t=00:17] 🔴 HIGH QRM — 50%+ confusion — multiple stations or heavy interference
+          SNR: 18.2dB
+          freq: 652Hz
+          dot: 30ms
+          dash: 109ms
+          ratio: 3.63x
+          confusion: 100.0%
+
+[t=00:18] 🔴 HIGH QRM — 50%+ confusion — multiple stations or heavy interference
+          SNR: 18.1dB
+          freq: 676Hz
+          dot: 38ms
+          dash: 80ms
+          ratio: 2.11x
+          confusion: 100.0%
+
+[t=00:20] 🔴 HIGH QRM — 50%+ confusion — multiple stations or heavy interference
+          SNR: 18.0dB
+          freq: 676Hz
+          dot: 45ms
+          dash: 147ms
+          ratio: 3.27x
+          confusion: 100.0%
+
+[t=00:21] 🔴 HIGH QRM — 50%+ confusion — multiple stations or heavy interference
+          SNR: 17.6dB
+          freq: 592Hz
+          dot: 35ms
+          dash: 71ms
+          ratio: 2.03x
+          confusion: 100.0%
+
+[t=00:21] ⚠️  FREQUENCY DRIFT — 676Hz → 592Hz
+          SNR: 17.6dB
+          freq: 592Hz
+          dot: 35ms
+          dash: 71ms
+          ratio: 2.03x
+          confusion: 100.0%
+
+[t=00:22] 🔴 HIGH QRM — 50%+ confusion — multiple stations or heavy interference
+          SNR: 18.0dB
+          freq: 699Hz
+          dot: 20ms
+          dash: 63ms
+          ratio: 3.15x
+          confusion: 100.0%
+
+[t=00:22] ⚠️  FREQUENCY DRIFT — 592Hz → 699Hz
+          SNR: 18.0dB
+          freq: 699Hz
+          dot: 20ms
+          dash: 63ms
+          ratio: 3.15x
+          confusion: 100.0%
+
+[t=00:23] ⚠️  HIGH CONFUSION — 25%+ unrecognized — weak signal or timing errors
+          SNR: 20.7dB
+          freq: 774Hz
+          dot: 20ms
+          dash: 83ms
+          ratio: 4.17x
+          confusion: 33.3%
+
+[t=00:23] ⚠️  FREQUENCY DRIFT — 699Hz → 774Hz
+          SNR: 20.7dB
+          freq: 774Hz
+          dot: 20ms
+          dash: 83ms
+          ratio: 4.17x
+          confusion: 33.3%
+
+[t=00:24] ⚠️  HIGH CONFUSION — 25%+ unrecognized — weak signal or timing errors
+          SNR: 21.3dB
+          freq: 774Hz
+          dot: 35ms
+          dash: 75ms
+          ratio: 2.14x
+          confusion: 50.0%
+
+[t=00:25] ⚠️  HIGH CONFUSION — 25%+ unrecognized — weak signal or timing errors
+          SNR: 22.6dB
+          freq: 774Hz
+          dot: 28ms
+          dash: 79ms
+          ratio: 2.82x
+          confusion: 28.6%
+
+[t=00:26] ⚠️  HIGH CONFUSION — 25%+ unrecognized — weak signal or timing errors
+          SNR: 23.0dB
+          freq: 774Hz
+          dot: 19ms
+          dash: 79ms
+          ratio: 4.16x
+          confusion: 40.0%
+
+[t=00:27] ⚠️  TIMING UNSTABLE — ratio=1.46x outside normal range 2.0-4.0x
+          SNR: 24.4dB
+          freq: 774Hz
+          dot: 35ms
+          dash: 51ms
+          ratio: 1.46x
+          confusion: 0.0%
+
+[t=00:30] 🔴 HIGH QRM — 50%+ confusion — multiple stations or heavy interference
+          SNR: 21.8dB
+          freq: 774Hz
+          dot: 10ms
+          dash: 40ms
+          ratio: 4.00x
+          confusion: 66.7%
+
+[t=00:31] ⚠️  HIGH CONFUSION — 25%+ unrecognized — weak signal or timing errors
+          SNR: 21.0dB
+          freq: 774Hz
+          dot: 21ms
+          dash: 45ms
+          ratio: 2.09x
+          confusion: 50.0%
+
+[t=00:32] 🔴 HIGH QRM — 50%+ confusion — multiple stations or heavy interference
+          SNR: 20.9dB
+          freq: 774Hz
+          dot: 17ms
+          dash: 45ms
+          ratio: 2.65x
+          confusion: 66.7%
+
+[t=00:34] ⚠️  HIGH CONFUSION — 25%+ unrecognized — weak signal or timing errors
+          SNR: 21.9dB
+          freq: 774Hz
+          dot: 35ms
+          dash: 58ms
+          ratio: 1.66x
+          confusion: 40.0%
+
+[t=00:35] ⚠️  HIGH CONFUSION — 25%+ unrecognized — weak signal or timing errors
+          SNR: 23.3dB
+          freq: 773Hz
+          dot: 20ms
+          dash: 57ms
+          ratio: 2.87x
+          confusion: 50.0%
+
+[t=00:37] ⚠️  TIMING UNSTABLE — ratio=7.08x outside normal range 2.0-4.0x
+          SNR: 26.6dB
+          freq: 774Hz
+          dot: 13ms
+          dash: 92ms
+          ratio: 7.08x
+          confusion: 0.0%
+
+[t=00:39] ⚠️  HIGH CONFUSION — 25%+ unrecognized — weak signal or timing errors
+          SNR: 21.0dB
+          freq: 774Hz
+          dot: 15ms
+          dash: 55ms
+          ratio: 3.67x
+          confusion: 50.0%
+
+[t=00:40] 🔴 HIGH QRM — 50%+ confusion — multiple stations or heavy interference
+          SNR: 18.3dB
+          freq: 611Hz
+          dot: 23ms
+          dash: 83ms
+          ratio: 3.53x
+          confusion: 100.0%
+
+[t=00:40] ⚠️  FREQUENCY DRIFT — 774Hz → 611Hz
+          SNR: 18.3dB
+          freq: 611Hz
+          dot: 23ms
+          dash: 83ms
+          ratio: 3.53x
+          confusion: 100.0%
+
+[t=00:41] 🔴 HIGH QRM — 50%+ confusion — multiple stations or heavy interference
+          SNR: 18.1dB
+          freq: 611Hz
+          dot: 39ms
+          dash: 90ms
+          ratio: 2.31x
+          confusion: 100.0%
+
+[t=00:42] ⚠️  HIGH CONFUSION — 25%+ unrecognized — weak signal or timing errors
+          SNR: 20.1dB
+          freq: 774Hz
+          dot: 30ms
+          dash: 60ms
+          ratio: 2.00x
+          confusion: 50.0%
+
+[t=00:42] ⚠️  FREQUENCY DRIFT — 611Hz → 774Hz
+          SNR: 20.1dB
+          freq: 774Hz
+          dot: 30ms
+          dash: 60ms
+          ratio: 2.00x
+          confusion: 50.0%
+
+[t=00:43] ⚠️  TIMING UNSTABLE — ratio=1.82x outside normal range 2.0-4.0x
+          SNR: 21.9dB
+          freq: 774Hz
+          dot: 30ms
+          dash: 54ms
+          ratio: 1.82x
+          confusion: 25.0%
+
+[t=00:44] 🔴 HIGH QRM — 50%+ confusion — multiple stations or heavy interference
+          SNR: 22.8dB
+          freq: 774Hz
+          dot: 35ms
+          dash: 48ms
+          ratio: 1.36x
+          confusion: 75.0%
+
+[t=00:45] ⚠️  HIGH CONFUSION — 25%+ unrecognized — weak signal or timing errors
+          SNR: 23.4dB
+          freq: 774Hz
+          dot: 20ms
+          dash: 40ms
+          ratio: 2.00x
+          confusion: 50.0%
+
+[t=00:46] ⚠️  HIGH CONFUSION — 25%+ unrecognized — weak signal or timing errors
+          SNR: 23.0dB
+          freq: 774Hz
+          dot: 15ms
+          dash: 40ms
+          ratio: 2.67x
+          confusion: 40.0%
+
+[t=00:48] ⚠️  HIGH CONFUSION — 25%+ unrecognized — weak signal or timing errors
+          SNR: 22.9dB
+          freq: 774Hz
+          dot: 35ms
+          dash: 50ms
+          ratio: 1.43x
+          confusion: 40.0%
+
+[t=00:49] ⚠️  HIGH CONFUSION — 25%+ unrecognized — weak signal or timing errors
+          SNR: 23.4dB
+          freq: 774Hz
+          dot: 15ms
+          dash: 50ms
+          ratio: 3.33x
+          confusion: 40.0%
+
+[t=00:50] ⚠️  HIGH CONFUSION — 25%+ unrecognized — weak signal or timing errors
+          SNR: 22.5dB
+          freq: 774Hz
+          dot: 10ms
+          dash: 40ms
+          ratio: 4.00x
+          confusion: 50.0%
+
+[t=00:51] ⚠️  HIGH CONFUSION — 25%+ unrecognized — weak signal or timing errors
+          SNR: 20.5dB
+          freq: 774Hz
+          dot: 21ms
+          dash: 64ms
+          ratio: 2.95x
+          confusion: 50.0%
+
+[t=00:52] 🔴 HIGH QRM — 50%+ confusion — multiple stations or heavy interference
+          SNR: 18.2dB
+          freq: 606Hz
+          dot: 23ms
+          dash: 65ms
+          ratio: 2.83x
+          confusion: 100.0%
+
+[t=00:52] ⚠️  FREQUENCY DRIFT — 774Hz → 606Hz
+          SNR: 18.2dB
+          freq: 606Hz
+          dot: 23ms
+          dash: 65ms
+          ratio: 2.83x
+          confusion: 100.0%
+
+[t=00:53] 🔴 HIGH QRM — 50%+ confusion — multiple stations or heavy interference
+          SNR: 17.7dB
+          freq: 706Hz
+          dot: 30ms
+          dash: 65ms
+          ratio: 2.20x
+          confusion: 100.0%
+
+[t=00:53] ⚠️  FREQUENCY DRIFT — 606Hz → 706Hz
+          SNR: 17.7dB
+          freq: 706Hz
+          dot: 30ms
+          dash: 65ms
+          ratio: 2.20x
+          confusion: 100.0%
+
+[t=00:54] 🔴 HIGH QRM — 50%+ confusion — multiple stations or heavy interference
+          SNR: 17.3dB
+          freq: 666Hz
+          dot: 20ms
+          dash: 76ms
+          ratio: 3.82x
+          confusion: 100.0%
+
+[t=00:55] 🔴 HIGH QRM — 50%+ confusion — multiple stations or heavy interference
+          SNR: 17.4dB
+          freq: 666Hz
+          dot: 20ms
+          dash: 72ms
+          ratio: 3.62x
+          confusion: 100.0%
+
+[t=00:56] 🔴 HIGH QRM — 50%+ confusion — multiple stations or heavy interference
+          SNR: 17.4dB
+          freq: 588Hz
+          dot: 40ms
+          dash: 87ms
+          ratio: 2.17x
+          confusion: 100.0%
+
+[t=00:56] ⚠️  FREQUENCY DRIFT — 666Hz → 588Hz
+          SNR: 17.4dB
+          freq: 588Hz
+          dot: 40ms
+          dash: 87ms
+          ratio: 2.17x
+          confusion: 100.0%
+
+[t=00:57] 🔴 HIGH QRM — 50%+ confusion — multiple stations or heavy interference
+          SNR: 17.6dB
+          freq: 654Hz
+          dot: 21ms
+          dash: 65ms
+          ratio: 3.05x
+          confusion: 100.0%
+
+[t=00:57] ⚠️  FREQUENCY DRIFT — 588Hz → 654Hz
+          SNR: 17.6dB
+          freq: 654Hz
+          dot: 21ms
+          dash: 65ms
+          ratio: 3.05x
+          confusion: 100.0%
+
+[t=00:58] 🔴 HIGH QRM — 50%+ confusion — multiple stations or heavy interference
+          SNR: 17.5dB
+          freq: 588Hz
+          dot: 28ms
+          dash: 72ms
+          ratio: 2.64x
+          confusion: 100.0%
+
+[t=00:58] ⚠️  FREQUENCY DRIFT — 654Hz → 588Hz
+          SNR: 17.5dB
+          freq: 588Hz
+          dot: 28ms
+          dash: 72ms
+          ratio: 2.64x
+          confusion: 100.0%
+
+[t=00:59] 🔴 HIGH QRM — 50%+ confusion — multiple stations or heavy interference
+          SNR: 17.5dB
+          freq: 649Hz
+          dot: 25ms
+          dash: 50ms
+          ratio: 2.00x
+          confusion: 100.0%
+
+[t=00:59] ⚠️  FREQUENCY DRIFT — 588Hz → 649Hz
+          SNR: 17.5dB
+          freq: 649Hz
+          dot: 25ms
+          dash: 50ms
+          ratio: 2.00x
+          confusion: 100.0%
+
+[t=01:00] 🔴 HIGH QRM — 50%+ confusion — multiple stations or heavy interference
+          SNR: 17.4dB
+          freq: 623Hz
+          dot: 30ms
+          dash: 75ms
+          ratio: 2.50x
+          confusion: 100.0%
+
+[t=01:01] 🔴 HIGH QRM — 50%+ confusion — multiple stations or heavy interference
+          SNR: 17.5dB
+          freq: 632Hz
+          dot: 34ms
+          dash: 85ms
+          ratio: 2.48x
+          confusion: 100.0%
+
+[t=01:02] 🔴 HIGH QRM — 50%+ confusion — multiple stations or heavy interference
+          SNR: 17.4dB
+          freq: 599Hz
+          dot: 20ms
+          dash: 81ms
+          ratio: 4.05x
+          confusion: 100.0%
+
+[t=01:03] 🔴 HIGH QRM — 50%+ confusion — multiple stations or heavy interference
+          SNR: 18.4dB
+          freq: 599Hz
+          dot: 30ms
+          dash: 85ms
+          ratio: 2.83x
+          confusion: 100.0%
+
+[t=01:05] 🔴 HIGH QRM — 50%+ confusion — multiple stations or heavy interference
+          SNR: 23.0dB
+          freq: 767Hz
+          dot: 35ms
+          dash: 75ms
+          ratio: 2.14x
+          confusion: 100.0%
+
+[t=01:05] ⚠️  FREQUENCY DRIFT — 599Hz → 767Hz
+          SNR: 23.0dB
+          freq: 767Hz
+          dot: 35ms
+          dash: 75ms
+          ratio: 2.14x
+          confusion: 100.0%
+
+[t=01:06] ⚠️  HIGH CONFUSION — 25%+ unrecognized — weak signal or timing errors
+          SNR: 25.8dB
+          freq: 767Hz
+          dot: 30ms
+          dash: 45ms
+          ratio: 1.54x
+          confusion: 50.0%
+
+[t=01:07] ⚠️  HIGH CONFUSION — 25%+ unrecognized — weak signal or timing errors
+          SNR: 24.4dB
+          freq: 767Hz
+          dot: 10ms
+          dash: 40ms
+          ratio: 4.00x
+          confusion: 50.0%
+
+[t=01:08] ⚠️  HIGH CONFUSION — 25%+ unrecognized — weak signal or timing errors
+          SNR: 23.9dB
+          freq: 767Hz
+          dot: 15ms
+          dash: 40ms
+          ratio: 2.67x
+          confusion: 50.0%
+
+[t=01:09] 🔴 HIGH QRM — 50%+ confusion — multiple stations or heavy interference
+          SNR: 20.7dB
+          freq: 767Hz
+          dot: 20ms
+          dash: 70ms
+          ratio: 3.50x
+          confusion: 100.0%
+
+[t=01:10] 🔴 HIGH QRM — 50%+ confusion — multiple stations or heavy interference
+          SNR: 18.9dB
+          freq: 767Hz
+          dot: 18ms
+          dash: 66ms
+          ratio: 3.59x
+          confusion: 100.0%
+
+[t=01:11] 🔴 HIGH QRM — 50%+ confusion — multiple stations or heavy interference
+          SNR: 18.0dB
+          freq: 611Hz
+          dot: 35ms
+          dash: 108ms
+          ratio: 3.09x
+          confusion: 100.0%
+
+[t=01:11] ⚠️  FREQUENCY DRIFT — 767Hz → 611Hz
+          SNR: 18.0dB
+          freq: 611Hz
+          dot: 35ms
+          dash: 108ms
+          ratio: 3.09x
+          confusion: 100.0%
+
+[t=01:12] 🔴 HIGH QRM — 50%+ confusion — multiple stations or heavy interference
+          SNR: 17.7dB
+          freq: 611Hz
+          dot: 40ms
+          dash: 100ms
+          ratio: 2.54x
+          confusion: 100.0%
+
+[t=01:13] 🔴 HIGH QRM — 50%+ confusion — multiple stations or heavy interference
+          SNR: 17.9dB
+          freq: 662Hz
+          dot: 30ms
+          dash: 76ms
+          ratio: 2.55x
+          confusion: 100.0%
+
+[t=01:13] ⚠️  FREQUENCY DRIFT — 611Hz → 662Hz
+          SNR: 17.9dB
+          freq: 662Hz
+          dot: 30ms
+          dash: 76ms
+          ratio: 2.55x
+          confusion: 100.0%
+
+[t=01:14] 🔴 HIGH QRM — 50%+ confusion — multiple stations or heavy interference
+          SNR: 17.9dB
+          freq: 581Hz
+          dot: 45ms
+          dash: 82ms
+          ratio: 1.83x
+          confusion: 100.0%
+
+[t=01:14] ⚠️  FREQUENCY DRIFT — 662Hz → 581Hz
+          SNR: 17.9dB
+          freq: 581Hz
+          dot: 45ms
+          dash: 82ms
+          ratio: 1.83x
+          confusion: 100.0%
+
+[t=01:15] 🔴 HIGH QRM — 50%+ confusion — multiple stations or heavy interference
+          SNR: 17.9dB
+          freq: 626Hz
+          dot: 44ms
+          dash: 72ms
+          ratio: 1.65x
+          confusion: 100.0%
+
+[t=01:16] 🔴 HIGH QRM — 50%+ confusion — multiple stations or heavy interference
+          SNR: 17.9dB
+          freq: 594Hz
+          dot: 35ms
+          dash: 86ms
+          ratio: 2.46x
+          confusion: 100.0%
+
+[t=01:17] 🔴 HIGH QRM — 50%+ confusion — multiple stations or heavy interference
+          SNR: 17.6dB
+          freq: 693Hz
+          dot: 45ms
+          dash: 108ms
+          ratio: 2.41x
+          confusion: 100.0%
+
+[t=01:17] ⚠️  FREQUENCY DRIFT — 594Hz → 693Hz
+          SNR: 17.6dB
+          freq: 693Hz
+          dot: 45ms
+          dash: 108ms
+          ratio: 2.41x
+          confusion: 100.0%
+
+[t=01:18] 🔴 HIGH QRM — 50%+ confusion — multiple stations or heavy interference
+          SNR: 17.7dB
+          freq: 603Hz
+          dot: 22ms
+          dash: 78ms
+          ratio: 3.44x
+          confusion: 100.0%
+
+[t=01:18] ⚠️  FREQUENCY DRIFT — 693Hz → 603Hz
+          SNR: 17.7dB
+          freq: 603Hz
+          dot: 22ms
+          dash: 78ms
+          ratio: 3.44x
+          confusion: 100.0%
+
+[t=01:19] 🔴 HIGH QRM — 50%+ confusion — multiple stations or heavy interference
+          SNR: 17.7dB
+          freq: 674Hz
+          dot: 25ms
+          dash: 65ms
+          ratio: 2.60x
+          confusion: 100.0%
+
+[t=01:19] ⚠️  FREQUENCY DRIFT — 603Hz → 674Hz
+          SNR: 17.7dB
+          freq: 674Hz
+          dot: 25ms
+          dash: 65ms
+          ratio: 2.60x
+          confusion: 100.0%
+
+[t=01:20] 🔴 HIGH QRM — 50%+ confusion — multiple stations or heavy interference
+          SNR: 17.8dB
+          freq: 642Hz
+          dot: 30ms
+          dash: 70ms
+          ratio: 2.33x
+          confusion: 100.0%
+
+[t=01:22] 🔴 HIGH QRM — 50%+ confusion — multiple stations or heavy interference
+          SNR: 17.8dB
+          freq: 642Hz
+          dot: 27ms
+          dash: 79ms
+          ratio: 2.93x
+          confusion: 100.0%
+
+[t=01:23] 🔴 HIGH QRM — 50%+ confusion — multiple stations or heavy interference
+          SNR: 17.8dB
+          freq: 644Hz
+          dot: 25ms
+          dash: 70ms
+          ratio: 2.80x
+          confusion: 100.0%
+
+[t=01:24] 🔴 HIGH QRM — 50%+ confusion — multiple stations or heavy interference
+          SNR: 17.6dB
+          freq: 608Hz
+          dot: 30ms
+          dash: 78ms
+          ratio: 2.62x
+          confusion: 100.0%
+
+[t=01:25] 🔴 HIGH QRM — 50%+ confusion — multiple stations or heavy interference
+          SNR: 17.7dB
+          freq: 579Hz
+          dot: 15ms
+          dash: 72ms
+          ratio: 4.80x
+          confusion: 100.0%
+
+[t=01:26] 🔴 HIGH QRM — 50%+ confusion — multiple stations or heavy interference
+          SNR: 17.6dB
+          freq: 640Hz
+          dot: 40ms
+          dash: 110ms
+          ratio: 2.75x
+          confusion: 100.0%
+
+[t=01:26] ⚠️  FREQUENCY DRIFT — 579Hz → 640Hz
+          SNR: 17.6dB
+          freq: 640Hz
+          dot: 40ms
+          dash: 110ms
+          ratio: 2.75x
+          confusion: 100.0%
+
+[t=01:27] 🔴 HIGH QRM — 50%+ confusion — multiple stations or heavy interference
+          SNR: 17.6dB
+          freq: 602Hz
+          dot: 30ms
+          dash: 78ms
+          ratio: 2.58x
+          confusion: 100.0%
+
+[t=01:28] 🔴 HIGH QRM — 50%+ confusion — multiple stations or heavy interference
+          SNR: 17.6dB
+          freq: 602Hz
+          dot: 35ms
+          dash: 95ms
+          ratio: 2.71x
+          confusion: 100.0%
+
+[t=01:29] 🔴 HIGH QRM — 50%+ confusion — multiple stations or heavy interference
+          SNR: 17.8dB
+          freq: 620Hz
+          dot: 22ms
+          dash: 92ms
+          ratio: 4.11x
+          confusion: 100.0%
+
+[t=01:30] 🔴 HIGH QRM — 50%+ confusion — multiple stations or heavy interference
+          SNR: 17.9dB
+          freq: 606Hz
+          dot: 40ms
+          dash: 110ms
+          ratio: 2.75x
+          confusion: 100.0%
+
+[t=01:31] 🔴 HIGH QRM — 50%+ confusion — multiple stations or heavy interference
+          SNR: 18.0dB
+          freq: 651Hz
+          dot: 35ms
+          dash: 95ms
+          ratio: 2.71x
+          confusion: 100.0%
+
+[t=01:32] 🔴 HIGH QRM — 50%+ confusion — multiple stations or heavy interference
+          SNR: 18.0dB
+          freq: 660Hz
+          dot: 37ms
+          dash: 111ms
+          ratio: 3.00x
+          confusion: 100.0%
+
+[t=01:33] 🔴 HIGH QRM — 50%+ confusion — multiple stations or heavy interference
+          SNR: 18.1dB
+          freq: 627Hz
+          dot: 26ms
+          dash: 90ms
+          ratio: 3.51x
+          confusion: 100.0%
+
+[t=01:34] 🔴 HIGH QRM — 50%+ confusion — multiple stations or heavy interference
+          SNR: 18.0dB
+          freq: 647Hz
+          dot: 32ms
+          dash: 88ms
+          ratio: 2.75x
+          confusion: 100.0%
+
+[t=01:35] 🔴 HIGH QRM — 50%+ confusion — multiple stations or heavy interference
+          SNR: 17.9dB
+          freq: 647Hz
+          dot: 26ms
+          dash: 74ms
+          ratio: 2.87x
+          confusion: 100.0%
+
+[t=01:36] 🔴 HIGH QRM — 50%+ confusion — multiple stations or heavy interference
+          SNR: 17.7dB
+          freq: 597Hz
+          dot: 25ms
+          dash: 84ms
+          ratio: 3.38x
+          confusion: 100.0%
+
+[t=01:37] 🔴 HIGH QRM — 50%+ confusion — multiple stations or heavy interference
+          SNR: 17.7dB
+          freq: 600Hz
+          dot: 20ms
+          dash: 71ms
+          ratio: 3.57x
+          confusion: 100.0%
+
+[t=01:38] 🔴 HIGH QRM — 50%+ confusion — multiple stations or heavy interference
+          SNR: 17.9dB
+          freq: 579Hz
+          dot: 38ms
+          dash: 99ms
+          ratio: 2.61x
+          confusion: 100.0%
+
+[t=01:39] 🔴 HIGH QRM — 50%+ confusion — multiple stations or heavy interference
+          SNR: 18.1dB
+          freq: 639Hz
+          dot: 23ms
+          dash: 80ms
+          ratio: 3.40x
+          confusion: 100.0%
+
+[t=01:39] ⚠️  FREQUENCY DRIFT — 579Hz → 639Hz
+          SNR: 18.1dB
+          freq: 639Hz
+          dot: 23ms
+          dash: 80ms
+          ratio: 3.40x
+          confusion: 100.0%
+
+[t=01:40] 🔴 HIGH QRM — 50%+ confusion — multiple stations or heavy interference
+          SNR: 18.0dB
+          freq: 626Hz
+          dot: 31ms
+          dash: 98ms
+          ratio: 3.13x
+          confusion: 100.0%
+
+[t=01:41] 🔴 HIGH QRM — 50%+ confusion — multiple stations or heavy interference
+          SNR: 17.8dB
+          freq: 615Hz
+          dot: 35ms
+          dash: 84ms
+          ratio: 2.41x
+          confusion: 100.0%
+
+[t=01:42] 🔴 HIGH QRM — 50%+ confusion — multiple stations or heavy interference
+          SNR: 17.6dB
+          freq: 613Hz
+          dot: 30ms
+          dash: 82ms
+          ratio: 2.73x
+          confusion: 100.0%
+
+[t=01:43] 🔴 HIGH QRM — 50%+ confusion — multiple stations or heavy interference
+          SNR: 17.6dB
+          freq: 596Hz
+          dot: 30ms
+          dash: 82ms
+          ratio: 2.73x
+          confusion: 100.0%
+
+[t=01:45] 🔴 HIGH QRM — 50%+ confusion — multiple stations or heavy interference
+          SNR: 17.7dB
+          freq: 665Hz
+          dot: 40ms
+          dash: 90ms
+          ratio: 2.24x
+          confusion: 100.0%
+
+[t=01:45] ⚠️  FREQUENCY DRIFT — 596Hz → 665Hz
+          SNR: 17.7dB
+          freq: 665Hz
+          dot: 40ms
+          dash: 90ms
+          ratio: 2.24x
+          confusion: 100.0%
+
+[t=01:46] 🔴 HIGH QRM — 50%+ confusion — multiple stations or heavy interference
+          SNR: 17.7dB
+          freq: 594Hz
+          dot: 30ms
+          dash: 75ms
+          ratio: 2.56x
+          confusion: 100.0%
+
+[t=01:46] ⚠️  FREQUENCY DRIFT — 665Hz → 594Hz
+          SNR: 17.7dB
+          freq: 594Hz
+          dot: 30ms
+          dash: 75ms
+          ratio: 2.56x
+          confusion: 100.0%
+
+[t=01:47] ⚠️  HIGH CONFUSION — 25%+ unrecognized — weak signal or timing errors
+          SNR: 17.6dB
+          freq: 665Hz
+          dot: 46ms
+          dash: 98ms
+          ratio: 2.12x
+          confusion: 50.0%
+
+[t=01:47] ⚠️  FREQUENCY DRIFT — 594Hz → 665Hz
+          SNR: 17.6dB
+          freq: 665Hz
+          dot: 46ms
+          dash: 98ms
+          ratio: 2.12x
+          confusion: 50.0%
+
+[t=01:48] 🔴 HIGH QRM — 50%+ confusion — multiple stations or heavy interference
+          SNR: 20.1dB
+          freq: 638Hz
+          dot: 41ms
+          dash: 88ms
+          ratio: 2.13x
+          confusion: 100.0%
+
+[t=01:49] ⚠️  HIGH CONFUSION — 25%+ unrecognized — weak signal or timing errors
+          SNR: 20.5dB
+          freq: 636Hz
+          dot: 26ms
+          dash: 89ms
+          ratio: 3.49x
+          confusion: 50.0%
+
+[t=01:50] 🔴 HIGH QRM — 50%+ confusion — multiple stations or heavy interference
+          SNR: 18.3dB
+          freq: 636Hz
+          dot: 20ms
+          dash: 60ms
+          ratio: 3.00x
+          confusion: 100.0%
+
+[t=01:51] 🔴 HIGH QRM — 50%+ confusion — multiple stations or heavy interference
+          SNR: 18.4dB
+          freq: 635Hz
+          dot: 20ms
+          dash: 54ms
+          ratio: 2.67x
+          confusion: 100.0%
+
+[t=01:52] ⚠️  HIGH CONFUSION — 25%+ unrecognized — weak signal or timing errors
+          SNR: 20.7dB
+          freq: 635Hz
+          dot: 23ms
+          dash: 61ms
+          ratio: 2.62x
+          confusion: 50.0%
+
+[t=01:53] 🔴 HIGH QRM — 50%+ confusion — multiple stations or heavy interference
+          SNR: 23.0dB
+          freq: 635Hz
+          dot: 25ms
+          dash: 66ms
+          ratio: 2.66x
+          confusion: 66.7%
+
+[t=01:54] ⚠️  TIMING UNSTABLE — ratio=5.40x outside normal range 2.0-4.0x
+          SNR: 26.2dB
+          freq: 635Hz
+          dot: 20ms
+          dash: 108ms
+          ratio: 5.40x
+          confusion: 20.0%
+
+[t=01:55] ⚠️  HIGH CONFUSION — 25%+ unrecognized — weak signal or timing errors
+          SNR: 26.3dB
+          freq: 635Hz
+          dot: 15ms
+          dash: 44ms
+          ratio: 2.90x
+          confusion: 50.0%
+
+[t=01:56] ⚠️  TIMING UNSTABLE — ratio=13.50x outside normal range 2.0-4.0x
+          SNR: 26.9dB
+          freq: 635Hz
+          dot: 10ms
+          dash: 135ms
+          ratio: 13.50x
+          confusion: 0.0%
+
+[t=01:58] ⚠️  HIGH CONFUSION — 25%+ unrecognized — weak signal or timing errors
+          SNR: 23.4dB
+          freq: 636Hz
+          dot: 16ms
+          dash: 70ms
+          ratio: 4.37x
+          confusion: 50.0%
+
+[t=02:00] ⚠️  HIGH CONFUSION — 25%+ unrecognized — weak signal or timing errors
+          SNR: 21.4dB
+          freq: 635Hz
+          dot: 17ms
+          dash: 79ms
+          ratio: 4.65x
+          confusion: 33.3%
+
+[t=02:01] 🔴 HIGH QRM — 50%+ confusion — multiple stations or heavy interference
+          SNR: 18.9dB
+          freq: 635Hz
+          dot: 15ms
+          dash: 75ms
+          ratio: 5.00x
+          confusion: 100.0%
+
+[t=02:02] 🔴 HIGH QRM — 50%+ confusion — multiple stations or heavy interference
+          SNR: 19.0dB
+          freq: 635Hz
+          dot: 15ms
+          dash: 53ms
+          ratio: 3.53x
+          confusion: 100.0%
+
+[t=02:03] 🔴 HIGH QRM — 50%+ confusion — multiple stations or heavy interference
+          SNR: 19.7dB
+          freq: 635Hz
+          dot: 13ms
+          dash: 55ms
+          ratio: 4.07x
+          confusion: 100.0%
+
+[t=02:04] ⚠️  HIGH CONFUSION — 25%+ unrecognized — weak signal or timing errors
+          SNR: 21.1dB
+          freq: 635Hz
+          dot: 10ms
+          dash: 55ms
+          ratio: 5.50x
+          confusion: 33.3%
+
+[t=02:05] 🔴 HIGH QRM — 50%+ confusion — multiple stations or heavy interference
+          SNR: 21.2dB
+          freq: 635Hz
+          dot: 20ms
+          dash: 60ms
+          ratio: 3.00x
+          confusion: 100.0%
+
+[t=02:06] 🔴 HIGH QRM — 50%+ confusion — multiple stations or heavy interference
+          SNR: 20.7dB
+          freq: 636Hz
+          dot: 15ms
+          dash: 55ms
+          ratio: 3.67x
+          confusion: 66.7%
+
+[t=02:07] ⚠️  HIGH CONFUSION — 25%+ unrecognized — weak signal or timing errors
+          SNR: 21.2dB
+          freq: 636Hz
+          dot: 15ms
+          dash: 55ms
+          ratio: 3.67x
+          confusion: 50.0%
+
+[t=02:08] ⚠️  HIGH CONFUSION — 25%+ unrecognized — weak signal or timing errors
+          SNR: 23.3dB
+          freq: 635Hz
+          dot: 15ms
+          dash: 55ms
+          ratio: 3.67x
+          confusion: 50.0%
+
+[t=02:09] ⚠️  HIGH CONFUSION — 25%+ unrecognized — weak signal or timing errors
+          SNR: 24.9dB
+          freq: 635Hz
+          dot: 10ms
+          dash: 56ms
+          ratio: 5.60x
+          confusion: 40.0%
+
+[t=02:10] 🔴 HIGH QRM — 50%+ confusion — multiple stations or heavy interference
+          SNR: 24.4dB
+          freq: 636Hz
+          dot: 15ms
+          dash: 55ms
+          ratio: 3.67x
+          confusion: 60.0%
+
+[t=02:11] 🔴 HIGH QRM — 50%+ confusion — multiple stations or heavy interference
+          SNR: 22.6dB
+          freq: 636Hz
+          dot: 15ms
+          dash: 55ms
+          ratio: 3.67x
+          confusion: 66.7%
+
+[t=02:13] 🔴 HIGH QRM — 50%+ confusion — multiple stations or heavy interference
+          SNR: 22.0dB
+          freq: 632Hz
+          dot: 15ms
+          dash: 55ms
+          ratio: 3.67x
+          confusion: 66.7%
+
+[t=02:14] 🔴 HIGH QRM — 50%+ confusion — multiple stations or heavy interference
+          SNR: 22.4dB
+          freq: 632Hz
+          dot: 15ms
+          dash: 55ms
+          ratio: 3.67x
+          confusion: 66.7%
+
+[t=02:15] ⚠️  TIMING UNSTABLE — ratio=5.50x outside normal range 2.0-4.0x
+          SNR: 23.5dB
+          freq: 635Hz
+          dot: 10ms
+          dash: 55ms
+          ratio: 5.50x
+          confusion: 12.5%
+
+[t=02:17] 🔴 HIGH QRM — 50%+ confusion — multiple stations or heavy interference
+          SNR: 21.7dB
+          freq: 635Hz
+          dot: 15ms
+          dash: 56ms
+          ratio: 3.77x
+          confusion: 100.0%
+
+[t=02:18] 🔴 HIGH QRM — 50%+ confusion — multiple stations or heavy interference
+          SNR: 21.2dB
+          freq: 635Hz
+          dot: 18ms
+          dash: 61ms
+          ratio: 3.32x
+          confusion: 100.0%
+
+[t=02:19] 🔴 HIGH QRM — 50%+ confusion — multiple stations or heavy interference
+          SNR: 19.6dB
+          freq: 813Hz
+          dot: 20ms
+          dash: 48ms
+          ratio: 2.42x
+          confusion: 100.0%
+
+[t=02:19] ⚠️  FREQUENCY DRIFT — 635Hz → 813Hz
+          SNR: 19.6dB
+          freq: 813Hz
+          dot: 20ms
+          dash: 48ms
+          ratio: 2.42x
+          confusion: 100.0%
+
+[t=02:20] 🔴 HIGH QRM — 50%+ confusion — multiple stations or heavy interference
+          SNR: 17.9dB
+          freq: 640Hz
+          dot: 24ms
+          dash: 61ms
+          ratio: 2.49x
+          confusion: 100.0%
+
+[t=02:20] ⚠️  FREQUENCY DRIFT — 813Hz → 640Hz
+          SNR: 17.9dB
+          freq: 640Hz
+          dot: 24ms
+          dash: 61ms
+          ratio: 2.49x
+          confusion: 100.0%
+
+[t=02:21] 🔴 HIGH QRM — 50%+ confusion — multiple stations or heavy interference
+          SNR: 17.7dB
+          freq: 632Hz
+          dot: 32ms
+          dash: 81ms
+          ratio: 2.55x
+          confusion: 100.0%
+
+[t=02:22] 🔴 HIGH QRM — 50%+ confusion — multiple stations or heavy interference
+          SNR: 17.8dB
+          freq: 653Hz
+          dot: 21ms
+          dash: 65ms
+          ratio: 3.02x
+          confusion: 100.0%
+
+[t=02:23] 🔴 HIGH QRM — 50%+ confusion — multiple stations or heavy interference
+          SNR: 17.9dB
+          freq: 653Hz
+          dot: 25ms
+          dash: 88ms
+          ratio: 3.50x
+          confusion: 100.0%
+
+[t=02:24] 🔴 HIGH QRM — 50%+ confusion — multiple stations or heavy interference
+          SNR: 17.8dB
+          freq: 653Hz
+          dot: 25ms
+          dash: 70ms
+          ratio: 2.80x
+          confusion: 100.0%
+
+[t=02:25] 🔴 HIGH QRM — 50%+ confusion — multiple stations or heavy interference
+          SNR: 20.8dB
+          freq: 624Hz
+          dot: 34ms
+          dash: 65ms
+          ratio: 1.94x
+          confusion: 100.0%
+
+[t=02:26] 🔴 HIGH QRM — 50%+ confusion — multiple stations or heavy interference
+          SNR: 43.9dB
+          freq: 597Hz
+          dot: 20ms
+          dash: 74ms
+          ratio: 3.61x
+          confusion: 100.0%
+
+[t=02:27] 🔴 HIGH QRM — 50%+ confusion — multiple stations or heavy interference
+          SNR: 48.2dB
+          freq: 720Hz
+          dot: 34ms
+          dash: 72ms
+          ratio: 2.13x
+          confusion: 100.0%
+
+[t=02:27] ⚠️  FREQUENCY DRIFT — 597Hz → 720Hz
+          SNR: 48.2dB
+          freq: 720Hz
+          dot: 34ms
+          dash: 72ms
+          ratio: 2.13x
+          confusion: 100.0%
+
+[t=02:28] ⚠️  TIMING UNSTABLE — ratio=1.13x outside normal range 2.0-4.0x
+          SNR: 45.6dB
+          freq: 729Hz
+          dot: 94ms
+          dash: 106ms
+          ratio: 1.13x
+          confusion: 0.0%
+
+[t=02:31] ⚠️  HIGH CONFUSION — 25%+ unrecognized — weak signal or timing errors
+          SNR: 40.6dB
+          freq: 672Hz
+          dot: 35ms
+          dash: 75ms
+          ratio: 2.14x
+          confusion: 28.6%
+
+[t=02:33] 🔴 HIGH QRM — 50%+ confusion — multiple stations or heavy interference
+          SNR: 17.5dB
+          freq: 631Hz
+          dot: 35ms
+          dash: 105ms
+          ratio: 3.01x
+          confusion: 100.0%
+
+[t=02:34] 🔴 HIGH QRM — 50%+ confusion — multiple stations or heavy interference
+          SNR: 17.5dB
+          freq: 631Hz
+          dot: 34ms
+          dash: 77ms
+          ratio: 2.23x
+          confusion: 100.0%
+
+[t=02:35] 🔴 HIGH QRM — 50%+ confusion — multiple stations or heavy interference
+          SNR: 20.2dB
+          freq: 610Hz
+          dot: 30ms
+          dash: 68ms
+          ratio: 2.27x
+          confusion: 100.0%
+
+[t=02:36] 🔴 HIGH QRM — 50%+ confusion — multiple stations or heavy interference
+          SNR: 21.8dB
+          freq: 636Hz
+          dot: 25ms
+          dash: 75ms
+          ratio: 3.00x
+          confusion: 100.0%
+
+[t=02:40] ⚠️  TIMING UNSTABLE — ratio=1.33x outside normal range 2.0-4.0x
+          SNR: 27.2dB
+          freq: 636Hz
+          dot: 60ms
+          dash: 80ms
+          ratio: 1.33x
+          confusion: 20.0%
+
+[t=02:41] ⚠️  TIMING UNSTABLE — ratio=1.21x outside normal range 2.0-4.0x
+          SNR: 27.1dB
+          freq: 635Hz
+          dot: 55ms
+          dash: 66ms
+          ratio: 1.21x
+          confusion: 0.0%
+
+[t=02:42] ⚠️  TIMING UNSTABLE — ratio=2.00x outside normal range 2.0-4.0x
+          SNR: 27.2dB
+          freq: 635Hz
+          dot: 55ms
+          dash: 110ms
+          ratio: 2.00x
+          confusion: 0.0%
+
+[t=02:47] ⚠️  HIGH CONFUSION — 25%+ unrecognized — weak signal or timing errors
+          SNR: 21.5dB
+          freq: 635Hz
+          dot: 15ms
+          dash: 61ms
+          ratio: 4.07x
+          confusion: 33.3%
+
+[t=02:48] 🔴 HIGH QRM — 50%+ confusion — multiple stations or heavy interference
+          SNR: 19.0dB
+          freq: 635Hz
+          dot: 16ms
+          dash: 55ms
+          ratio: 3.44x
+          confusion: 100.0%
+
+[t=02:49] 🔴 HIGH QRM — 50%+ confusion — multiple stations or heavy interference
+          SNR: 18.6dB
+          freq: 636Hz
+          dot: 15ms
+          dash: 65ms
+          ratio: 4.33x
+          confusion: 100.0%
+
+[t=02:50] 🔴 HIGH QRM — 50%+ confusion — multiple stations or heavy interference
+          SNR: 18.2dB
+          freq: 638Hz
+          dot: 23ms
+          dash: 75ms
+          ratio: 3.19x
+          confusion: 100.0%
+
+[t=02:51] ⚠️  HIGH CONFUSION — 25%+ unrecognized — weak signal or timing errors
+          SNR: 20.8dB
+          freq: 636Hz
+          dot: 25ms
+          dash: 94ms
+          ratio: 3.76x
+          confusion: 50.0%
+
+[t=02:52] ⚠️  HIGH CONFUSION — 25%+ unrecognized — weak signal or timing errors
+          SNR: 25.4dB
+          freq: 636Hz
+          dot: 25ms
+          dash: 68ms
+          ratio: 2.72x
+          confusion: 33.3%
+
+[t=02:53] ⚠️  TIMING UNSTABLE — ratio=4.48x outside normal range 2.0-4.0x
+          SNR: 28.2dB
+          freq: 636Hz
+          dot: 14ms
+          dash: 65ms
+          ratio: 4.48x
+          confusion: 0.0%
+
+[t=02:55] ⚠️  TIMING UNSTABLE — ratio=4.63x outside normal range 2.0-4.0x
+          SNR: 27.2dB
+          freq: 635Hz
+          dot: 32ms
+          dash: 150ms
+          ratio: 4.63x
+          confusion: 0.0%
+
+[t=03:06] ⚠️  TIMING UNSTABLE — ratio=4.17x outside normal range 2.0-4.0x
+          SNR: 25.7dB
+          freq: 635Hz
+          dot: 14ms
+          dash: 60ms
+          ratio: 4.17x
+          confusion: 0.0%
+
+[t=03:08] ⚠️  HIGH CONFUSION — 25%+ unrecognized — weak signal or timing errors
+          SNR: 23.7dB
+          freq: 635Hz
+          dot: 15ms
+          dash: 71ms
+          ratio: 4.73x
+          confusion: 50.0%
+
+[t=03:09] ⚠️  HIGH CONFUSION — 25%+ unrecognized — weak signal or timing errors
+          SNR: 21.3dB
+          freq: 635Hz
+          dot: 10ms
+          dash: 57ms
+          ratio: 5.70x
+          confusion: 33.3%
+
+[t=03:10] 🔴 HIGH QRM — 50%+ confusion — multiple stations or heavy interference
+          SNR: 22.0dB
+          freq: 635Hz
+          dot: 10ms
+          dash: 65ms
+          ratio: 6.50x
+          confusion: 66.7%
+
+[t=03:13] ⚠️  TIMING UNSTABLE — ratio=4.33x outside normal range 2.0-4.0x
+          SNR: 25.6dB
+          freq: 635Hz
+          dot: 15ms
+          dash: 65ms
+          ratio: 4.33x
+          confusion: 20.0%
+
+[t=03:14] ⚠️  HIGH CONFUSION — 25%+ unrecognized — weak signal or timing errors
+          SNR: 24.1dB
+          freq: 635Hz
+          dot: 21ms
+          dash: 74ms
+          ratio: 3.42x
+          confusion: 50.0%
+
+[t=03:15] ⚠️  HIGH CONFUSION — 25%+ unrecognized — weak signal or timing errors
+          SNR: 25.2dB
+          freq: 636Hz
+          dot: 19ms
+          dash: 66ms
+          ratio: 3.47x
+          confusion: 33.3%
+
+[t=03:16] ⚠️  HIGH CONFUSION — 25%+ unrecognized — weak signal or timing errors
+          SNR: 31.6dB
+          freq: 622Hz
+          dot: 25ms
+          dash: 60ms
+          ratio: 2.40x
+          confusion: 50.0%
+
+[t=03:17] ⚠️  FREQUENCY DRIFT — 622Hz → 708Hz
+          SNR: 34.8dB
+          freq: 708Hz
+          dot: 36ms
+          dash: 94ms
+          ratio: 2.61x
+          confusion: 0.0%
+
+[t=03:20] ⚠️  FREQUENCY DRIFT — 698Hz → 634Hz
+          SNR: 42.2dB
+          freq: 634Hz
+          dot: 20ms
+          dash: 55ms
+          ratio: 2.75x
+          confusion: 16.7%
+
+[t=03:21] ⚠️  HIGH CONFUSION — 25%+ unrecognized — weak signal or timing errors
+          SNR: 31.9dB
+          freq: 635Hz
+          dot: 15ms
+          dash: 60ms
+          ratio: 4.00x
+          confusion: 33.3%
+
+[t=03:22] 🔴 HIGH QRM — 50%+ confusion — multiple stations or heavy interference
+          SNR: 18.4dB
+          freq: 635Hz
+          dot: 13ms
+          dash: 62ms
+          ratio: 4.77x
+          confusion: 100.0%
+
+[t=03:23] ⚠️  HIGH CONFUSION — 25%+ unrecognized — weak signal or timing errors
+          SNR: 19.6dB
+          freq: 635Hz
+          dot: 10ms
+          dash: 73ms
+          ratio: 7.30x
+          confusion: 50.0%
+
+[t=03:24] ⚠️  HIGH CONFUSION — 25%+ unrecognized — weak signal or timing errors
+          SNR: 21.6dB
+          freq: 635Hz
+          dot: 10ms
+          dash: 60ms
+          ratio: 6.00x
+          confusion: 50.0%
+
+[t=03:26] ⚠️  TIMING UNSTABLE — ratio=6.50x outside normal range 2.0-4.0x
+          SNR: 22.6dB
+          freq: 635Hz
+          dot: 10ms
+          dash: 65ms
+          ratio: 6.50x
+          confusion: 0.0%
+
+[t=03:27] ⚠️  TIMING UNSTABLE — ratio=4.33x outside normal range 2.0-4.0x
+          SNR: 21.5dB
+          freq: 635Hz
+          dot: 15ms
+          dash: 65ms
+          ratio: 4.33x
+          confusion: 20.0%
+
+[t=03:28] 🔴 HIGH QRM — 50%+ confusion — multiple stations or heavy interference
+          SNR: 21.5dB
+          freq: 635Hz
+          dot: 15ms
+          dash: 62ms
+          ratio: 4.13x
+          confusion: 66.7%
+
+[t=03:32] ⚠️  HIGH CONFUSION — 25%+ unrecognized — weak signal or timing errors
+          SNR: 26.5dB
+          freq: 635Hz
+          dot: 12ms
+          dash: 70ms
+          ratio: 5.60x
+          confusion: 33.3%
+
+[t=03:34] 🔴 HIGH QRM — 50%+ confusion — multiple stations or heavy interference
+          SNR: 45.8dB
+          freq: 635Hz
+          dot: 10ms
+          dash: 47ms
+          ratio: 4.70x
+          confusion: 100.0%
+
+[t=03:39] ⚠️  TIMING UNSTABLE — ratio=4.33x outside normal range 2.0-4.0x
+          SNR: 35.6dB
+          freq: 635Hz
+          dot: 15ms
+          dash: 65ms
+          ratio: 4.33x
+          confusion: 0.0%
+
+[t=03:40] 🔴 HIGH QRM — 50%+ confusion — multiple stations or heavy interference
+          SNR: 55.4dB
+          freq: 626Hz
+          dot: 24ms
+          dash: 83ms
+          ratio: 3.46x
+          confusion: 100.0%
+
+[t=03:41] ⚠️  TIMING UNSTABLE — ratio=1.00x outside normal range 2.0-4.0x
+          SNR: 51.3dB
+          freq: 220Hz
+          dot: 20ms
+          dash: 20ms
+          ratio: 1.00x
+          confusion: 0.0%
+
+[t=03:41] ⚠️  FREQUENCY DRIFT — 626Hz → 220Hz
+          SNR: 51.3dB
+          freq: 220Hz
+          dot: 20ms
+          dash: 20ms
+          ratio: 1.00x
+          confusion: 0.0%
+
+[t=03:44] ⚠️  TIMING UNSTABLE — ratio=1.90x outside normal range 2.0-4.0x
+          SNR: 66.7dB
+          freq: 636Hz
+          dot: 67ms
+          dash: 127ms
+          ratio: 1.90x
+          confusion: 0.0%
+
+[t=03:44] ⚠️  FREQUENCY DRIFT — 220Hz → 636Hz
+          SNR: 66.7dB
+          freq: 636Hz
+          dot: 67ms
+          dash: 127ms
+          ratio: 1.90x
+          confusion: 0.0%
+
+[t=03:45] ⚠️  HIGH CONFUSION — 25%+ unrecognized — weak signal or timing errors
+          SNR: 68.3dB
+          freq: 634Hz
+          dot: 32ms
+          dash: 72ms
+          ratio: 2.23x
+          confusion: 50.0%
+
+[t=03:50] ⚠️  TIMING UNSTABLE — ratio=6.86x outside normal range 2.0-4.0x
+          SNR: 39.6dB
+          freq: 635Hz
+          dot: 22ms
+          dash: 151ms
+          ratio: 6.86x
+          confusion: 0.0%
+
+[t=03:54] ⚠️  TIMING UNSTABLE — ratio=1.00x outside normal range 2.0-4.0x
+          SNR: 45.4dB
+          freq: 201Hz
+          dot: 30ms
+          dash: 30ms
+          ratio: 1.00x
+          confusion: 0.0%
+
+[t=03:54] ⚠️  FREQUENCY DRIFT — 636Hz → 201Hz
+          SNR: 45.4dB
+          freq: 201Hz
+          dot: 30ms
+          dash: 30ms
+          ratio: 1.00x
+          confusion: 0.0%
+
+[t=03:55] ⚠️  FREQUENCY DRIFT — 201Hz → 635Hz
+          SNR: 51.6dB
+          freq: 635Hz
+          dot: 20ms
+          dash: 50ms
+          ratio: 2.44x
+          confusion: 0.0%
+
+[t=03:58] 🔴 HIGH QRM — 50%+ confusion — multiple stations or heavy interference
+          SNR: 18.9dB
+          freq: 635Hz
+          dot: 15ms
+          dash: 60ms
+          ratio: 4.00x
+          confusion: 100.0%
+
+[t=03:59] ⚠️  HIGH CONFUSION — 25%+ unrecognized — weak signal or timing errors
+          SNR: 19.7dB
+          freq: 636Hz
+          dot: 15ms
+          dash: 60ms
+          ratio: 4.00x
+          confusion: 50.0%
+
+[t=04:00] ⚠️  TIMING UNSTABLE — ratio=4.80x outside normal range 2.0-4.0x
+          SNR: 20.5dB
+          freq: 636Hz
+          dot: 15ms
+          dash: 72ms
+          ratio: 4.80x
+          confusion: 16.7%
+
+[t=04:01] ⚠️  TIMING UNSTABLE — ratio=16.00x outside normal range 2.0-4.0x
+          SNR: 20.3dB
+          freq: 635Hz
+          dot: 10ms
+          dash: 160ms
+          ratio: 16.00x
+          confusion: 0.0%
+
+[t=04:02] 🔴 HIGH QRM — 50%+ confusion — multiple stations or heavy interference
+          SNR: 19.7dB
+          freq: 635Hz
+          dot: 10ms
+          dash: 65ms
+          ratio: 6.50x
+          confusion: 100.0%
+
+[t=04:03] 🔴 HIGH QRM — 50%+ confusion — multiple stations or heavy interference
+          SNR: 18.9dB
+          freq: 636Hz
+          dot: 15ms
+          dash: 60ms
+          ratio: 4.00x
+          confusion: 100.0%
+
+[t=04:04] 🔴 HIGH QRM — 50%+ confusion — multiple stations or heavy interference
+          SNR: 18.3dB
+          freq: 635Hz
+          dot: 15ms
+          dash: 65ms
+          ratio: 4.48x
+          confusion: 100.0%
+
+[t=04:05] 🔴 HIGH QRM — 50%+ confusion — multiple stations or heavy interference
+          SNR: 17.8dB
+          freq: 635Hz
+          dot: 16ms
+          dash: 68ms
+          ratio: 4.15x
+          confusion: 100.0%
+
+[t=04:08] ⚠️  HIGH CONFUSION — 25%+ unrecognized — weak signal or timing errors
+          SNR: 22.9dB
+          freq: 636Hz
+          dot: 25ms
+          dash: 91ms
+          ratio: 3.64x
+          confusion: 50.0%
+
+[t=04:09] 🔴 HIGH QRM — 50%+ confusion — multiple stations or heavy interference
+          SNR: 17.6dB
+          freq: 636Hz
+          dot: 15ms
+          dash: 71ms
+          ratio: 4.77x
+          confusion: 100.0%
+
+[t=04:10] 🔴 HIGH QRM — 50%+ confusion — multiple stations or heavy interference
+          SNR: 17.6dB
+          freq: 636Hz
+          dot: 16ms
+          dash: 64ms
+          ratio: 4.00x
+          confusion: 100.0%
+
+[t=04:11] 🔴 HIGH QRM — 50%+ confusion — multiple stations or heavy interference
+          SNR: 17.7dB
+          freq: 636Hz
+          dot: 26ms
+          dash: 70ms
+          ratio: 2.64x
+          confusion: 100.0%
+
+[t=04:12] 🔴 HIGH QRM — 50%+ confusion — multiple stations or heavy interference
+          SNR: 17.5dB
+          freq: 635Hz
+          dot: 30ms
+          dash: 74ms
+          ratio: 2.45x
+          confusion: 100.0%
+
+[t=04:13] 🔴 HIGH QRM — 50%+ confusion — multiple stations or heavy interference
+          SNR: 17.4dB
+          freq: 639Hz
+          dot: 28ms
+          dash: 75ms
+          ratio: 2.63x
+          confusion: 100.0%
+
+[t=04:14] 🔴 HIGH QRM — 50%+ confusion — multiple stations or heavy interference
+          SNR: 17.7dB
+          freq: 581Hz
+          dot: 25ms
+          dash: 70ms
+          ratio: 2.80x
+          confusion: 100.0%
+
+[t=04:14] ⚠️  FREQUENCY DRIFT — 639Hz → 581Hz
+          SNR: 17.7dB
+          freq: 581Hz
+          dot: 25ms
+          dash: 70ms
+          ratio: 2.80x
+          confusion: 100.0%
+
+[t=04:15] ⚠️  HIGH CONFUSION — 25%+ unrecognized — weak signal or timing errors
+          SNR: 19.0dB
+          freq: 635Hz
+          dot: 25ms
+          dash: 70ms
+          ratio: 2.82x
+          confusion: 50.0%
+
+[t=04:15] ⚠️  FREQUENCY DRIFT — 581Hz → 635Hz
+          SNR: 19.0dB
+          freq: 635Hz
+          dot: 25ms
+          dash: 70ms
+          ratio: 2.82x
+          confusion: 50.0%
+
+[t=04:16] ⚠️  HIGH CONFUSION — 25%+ unrecognized — weak signal or timing errors
+          SNR: 20.7dB
+          freq: 636Hz
+          dot: 30ms
+          dash: 89ms
+          ratio: 2.97x
+          confusion: 33.3%
+
+[t=04:19] ⚠️  TIMING UNSTABLE — ratio=4.20x outside normal range 2.0-4.0x
+          SNR: 21.8dB
+          freq: 635Hz
+          dot: 15ms
+          dash: 63ms
+          ratio: 4.20x
+          confusion: 25.0%
+
+[t=04:20] ⚠️  HIGH CONFUSION — 25%+ unrecognized — weak signal or timing errors
+          SNR: 20.7dB
+          freq: 635Hz
+          dot: 15ms
+          dash: 58ms
+          ratio: 3.87x
+          confusion: 50.0%
+
+[t=04:21] 🔴 HIGH QRM — 50%+ confusion — multiple stations or heavy interference
+          SNR: 19.5dB
+          freq: 635Hz
+          dot: 15ms
+          dash: 65ms
+          ratio: 4.33x
+          confusion: 66.7%
+
+[t=04:23] 🔴 HIGH QRM — 50%+ confusion — multiple stations or heavy interference
+          SNR: 18.3dB
+          freq: 636Hz
+          dot: 15ms
+          dash: 65ms
+          ratio: 4.33x
+          confusion: 66.7%
+
+[t=04:24] ⚠️  HIGH CONFUSION — 25%+ unrecognized — weak signal or timing errors
+          SNR: 18.5dB
+          freq: 635Hz
+          dot: 10ms
+          dash: 60ms
+          ratio: 6.00x
+          confusion: 50.0%
+
+[t=04:25] ⚠️  TIMING UNSTABLE — ratio=6.00x outside normal range 2.0-4.0x
+          SNR: 18.7dB
+          freq: 636Hz
+          dot: 10ms
+          dash: 60ms
+          ratio: 6.00x
+          confusion: 20.0%

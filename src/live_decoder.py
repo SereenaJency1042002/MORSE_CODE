@@ -185,15 +185,12 @@ class LiveDecoder:
                             status: str):
         """Print single updating status line to terminal."""
         line = (
-            f"[LIVE t={self._elapsed()}] "
-            f"{peak_freq:.0f}Hz | "
-            f"dot={dot_ms:.0f}ms dash={dash_ms:.0f}ms | "
-            f"ratio={ratio:.2f}x | "
-            f"SNR={snr:.1f}dB | "
-            f"?={q_rate:.0%} | "
+            f"[LIVE {self._elapsed()}] "
+            f"{peak_freq:.0f}Hz "
+            f"SNR={snr:.1f}dB "
             f"{status}"
         )
-        sys.stdout.write("\r" + line.ljust(110))
+        sys.stdout.write("\r" + line.ljust(55))
         sys.stdout.flush()
 
     def print_session_report(self):

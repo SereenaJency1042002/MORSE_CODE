@@ -355,7 +355,6 @@ class UIDisplay:
         self._wf_buffer = np.zeros((80, 256), dtype=np.float32)
         self._live_text_buffer = ""
         self._live_ai_tick = 0
-        self.live_explain_box.delete("1.0", "end")
         self._smeter_active = True
         self.start_live_btn.configure(state="disabled")
         self.stop_btn.configure(state="normal")
@@ -418,29 +417,18 @@ class UIDisplay:
                 ).start()
 
     def _run_live_ai(self, text: str):
-        """
-        Runs in background thread.
-        Step 1: correct signals strictly.
-        Step 2: explain corrected transmission.
-        Updates both AI boxes on main thread.
-        """
         try:
             from src.offline_ai import OfflineAI
             predictor = OfflineAI()
             corrected = predictor.correct_live_signals(text)
-            explanation = predictor.explain_live_transmission(corrected)
-            self.app.after(0, lambda c=corrected, e=explanation:
-                           self._set_live_ai_text(c, e))
-        except Exception as ex:
-            print(f"Live AI thread error: {ex}")
+            self.app.after(0, lambda: self._set_live_ai_text(corrected))
+        except Exception as e:
+            print(f"[AI] Error: {e}")
 
-    def _set_live_ai_text(self, corrected: str, explanation: str):
-        """Runs on main thread — updates both AI boxes."""
+    def _set_live_ai_text(self, corrected: str):
+        """Runs on main thread — updates the AI corrected box."""
         self.ai_text_box.insert("end", corrected + "\n")
         self.ai_text_box.see("end")
-        if explanation:
-            self.live_explain_box.insert("end", explanation + "\n\n")
-            self.live_explain_box.see("end")
 
     def _on_live_status(self, status: str):
         """
@@ -764,7 +752,6 @@ class UIDisplay:
         self.ai_frame.grid(row=0, column=2, sticky="nsew", padx=(8, 0))
         self.ai_frame.columnconfigure(0, weight=1)
         self.ai_frame.rowconfigure(1, weight=1)
-        self.ai_frame.rowconfigure(4, weight=1)
 
         # Top — AI corrected signals only
         ctk.CTkLabel(
@@ -776,22 +763,6 @@ class UIDisplay:
             font=ctk.CTkFont(family="Courier New", size=12),
         )
         self.ai_text_box.grid(row=1, column=0, sticky="nsew", pady=(2, 4))
-
-        # Divider
-        ctk.CTkFrame(
-            self.ai_frame, fg_color=_BORDER, height=1
-        ).grid(row=2, column=0, sticky="ew")
-
-        # Bottom — explanation
-        ctk.CTkLabel(
-            self.ai_frame, text=self._spaced("EXPLANATION"),
-            font=ctk.CTkFont(size=9), text_color=_MUTED2
-        ).grid(row=3, column=0, sticky="nw", pady=(4, 0))
-        self.live_explain_box = ctk.CTkTextbox(
-            self.ai_frame, fg_color=_BG, text_color=_GREEN, border_width=0,
-            font=ctk.CTkFont(family="Courier New", size=11),
-        )
-        self.live_explain_box.grid(row=4, column=0, sticky="nsew", pady=(2, 0))
         self.ai_frame.grid_remove()
 
     # ── animations ────────────────────────────────────────────────────────────
